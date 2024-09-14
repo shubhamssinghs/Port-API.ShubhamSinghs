@@ -1,0 +1,123 @@
+tags:
+  - name: Users
+    description: APIs related to users
+
+paths:
+  /api/user/all:
+    get:
+      summary: Get all users
+      tags: [Users]
+      description: Retrieve all users.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden, failed to verify the authentication token.
+        '500':
+          description: Internal Server Error
+
+  /api/user/{uuid}:
+    get:
+      summary: Get user by UUID
+      tags: [Users]
+      description: Retrieve a user by UUID.
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+          description: UUID of the user to retrieve
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden, failed to verify the authentication token.
+        '404':
+          description: User not found
+        '422':
+          description: Unprocessable Entity, Invalid UUID provided.
+        '500':
+          description: Internal Server Error
+
+  /api/user/{uuid}/update:
+    put:
+      summary: Update a user by UUID
+      tags: [Users]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+          description: UUID of the user to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The new name of the user.
+                email:
+                  type: string
+                  format: email
+                  description: The new email address of the user.
+                img:
+                  type: string
+                  description: The new image encoded in base64 format.
+      responses:
+        '200':
+          description: User updated successfully.
+        '400':
+          description: Bad request, image must be provided in base64 format.
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden, failed to verify the authentication token.
+        '404':
+          description: User not found.
+        '422':
+          description: Unprocessable Entity, Invalid UUID provided.
+        '500':
+          description: Internal Server Error. Unable to update user.
+
+  /api/user/{uuid}/delete:
+    delete:
+      summary: Delete a user by UUID
+      tags: [Users]
+      description: Deletes a user with the specified UUID.
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+          description: UUID of the user to delete
+      responses:
+        '200':
+          description: User deleted successfully.
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden, failed to verify the authentication token.
+        '404':
+          description: User not found.
+        '422':
+          description: Unprocessable Entity, Invalid UUID provided.
+        '500':
+          description: Internal Server Error. Unable to delete user.
