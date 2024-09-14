@@ -1,0 +1,13 @@
+{
+  "LogoutSuccess": "You have been successfully logged out.",
+  "UserCreationSuccess": "User created successfully.",
+  "UserUpdateSuccess": "User updated successfully.",
+  "UserDeletionSuccess": "User deleted successfully.",
+  "PasswordResetSuccess": "Password reset successful. An email has been sent to your registered email address with further instructions.",
+  "TokenRefreshSuccess": "Token refresh successful. Your authentication token has been successfully refreshed.",
+  "VerificationEmailSent": "Verification email sent successfully. Please check your email inbox and follow the instructions to verify your account.",
+  "EmailAlreadyVerified": "Email address has already been verified. Please proceed with your login.",
+  "EmailVerifiedSuccessfully": "Email address verified successfully. You can now log in.",
+  "UserUpdateSuccessfully": "User updated successfully.",
+  "UserDeletedSuccessfully": "User deleted successfully."
+}

@@ -1,0 +1,14 @@
+{
+  "environment": "production",
+  "server": {
+    "host": "localhost",
+    "port": 2828
+  },
+  "cors": {
+    "origins": [""]
+  },
+  "logging": {
+    "level": "database",
+    "timezone": "Asia/Kolkata"
+  }
+}

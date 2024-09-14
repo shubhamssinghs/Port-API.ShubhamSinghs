@@ -1,0 +1,164 @@
+tags:
+  - name: Authentication
+    description: APIs related to user authentication, login, and logout
+  - name: Registration
+    description: APIs related to user registration and account creation
+  - name: Email Verification
+    description: APIs related to email verification and account activation
+
+paths:
+  /api/auth/register:
+    post:
+      summary: Register a new user
+      tags: [Registration]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The new user name.
+                  example: Test User
+                  required: true
+                email:
+                  type: string
+                  format: email
+                  description: The new user email.
+                  example: test@test.com
+                  required: true
+                password:
+                  type: string
+                  description: The new user password.
+                  example: Test@123
+                  required: true
+      responses:
+        '201':
+          description: User created successfully.
+        '409':
+          description: User already exists with the provided email.
+        '422':
+          description: Unprocessable Entity, validation error.
+        '500':
+          description: Internal Server Error, unable to create user.
+
+  /api/auth/login:
+    post:
+      summary: Login user
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: User email.
+                  example: test@test.com
+                  format: email
+                  required: true
+                password:
+                  type: string
+                  description: User password.
+                  example: Test@123
+                  required: true
+      responses:
+        '200':
+          description: User logged in successfully. Returns a user object along with an access token.
+        '401':
+          description: Unauthorized, invalid email or password.
+        '403':
+          description: Forbidden, email verification is required to proceed.
+        '404':
+          description: User not found.
+        '409':
+          description: Conflict, user already exists with the provided email.
+        '422':
+          description: Unprocessable Entity, validation error.
+        '500':
+          description: Internal Server Error, unable to log in.
+
+  /api/auth/logout:
+    post:
+      summary: Logout user
+      tags: [Authentication]
+      requestBody:
+        required: false
+      responses:
+        '200':
+          description: Logout successful. Returns a message confirming the logout.
+        '204':
+          description: No content. Cookie not found.
+        '500':
+          description: Internal Server Error. Unable to logout.
+
+  /api/auth/refresh-token:
+    post:
+      summary: Refresh Access Token
+      tags: [Authentication]
+      requestBody:
+        required: false
+      responses:
+        '200':
+          description: Token successfully refreshed
+        '401':
+          description: Unauthorized. Refresh token not found.
+        '500':
+          description: Internal Server Error. Unable to refresh token.
+
+  /api/auth/send-verification-email:
+    post:
+      summary: Send email verification token
+      tags: [Email Verification]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: The email address to send the verification token.
+                  example: test@test.com
+                  required: true
+                redirectionUrl:
+                  type: string
+                  description: The URL to redirect the user to after verification.
+                  example: https://google.com
+                  required: true
+      responses:
+        '200':
+          description: Email verification token sent successfully.
+        '400':
+          description: No Content. Invalid email/redirectionUrl provided.
+        '404':
+          description: Not Found. User not found with the provided email.
+        '500':
+          description: Internal Server Error. Unable to send the email verification link.
+
+  /api/auth/verify-email/{token}:
+    get:
+      summary: Verify email token
+      tags: [Email Verification]
+      parameters:
+        - in: path
+          name: token
+          required: true
+          description: The verification token received in the email.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Email verified successfully. Message confirming that the email has been verified.
+        '400':
+          description: Bad request. Token not found or expired.
+        '404':
+          description: Not found. Token not found in the database.
+        '500':
+          description: Internal Server Error. Unable to verify the token.
