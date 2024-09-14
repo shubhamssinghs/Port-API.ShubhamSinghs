@@ -9,8 +9,9 @@
     "gm": "bash scripts/generate-migration.script.sh",
     "test:dev": "bash scripts/test.development.script.sh",
     "test:prod": "bash scripts/test.production.script.sh",
-    "lint": "eslint 'src/**/*.ts'",
-    "precommit": "concurrently \"npm run lint\" \"npm run test:dev\"",
+    "prettier": "npx prettier --write src/**/*.ts",
+    "lint": "eslint src/**/*.ts",
+    "precommit": "concurrently \"npm run prettier\" \"npm run lint\" \"npm run test:dev\"",
     "migrate": "npx sequelize-cli db:migrate",
     "migrate:undo": "npx sequelize-cli db:migrate:undo",
     "prepare": "husky install"
