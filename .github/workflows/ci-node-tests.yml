@@ -1,4 +1,4 @@
-name: CI - Node Tests
+name: CI - Node Tests & SonarQube Scan
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - develop
 
 jobs:
-  build:
+  test_and_run_sonar_on_code:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -15,7 +15,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '21'
+          node-version: '17'
 
       - name: Install dependencies
         run: npm install
