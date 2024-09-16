@@ -23,6 +23,9 @@ jobs:
       - name: Run tests
         run: npm run test:dev
 
+      - name: Create SonarQube configuration file
+        run: echo "sonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}" > sonar-project.properties
+
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
         env:
