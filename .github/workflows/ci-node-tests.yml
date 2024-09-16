@@ -23,6 +23,9 @@ jobs:
       - name: Run tests
         run: npm run test:dev
 
+      - name: Install SonarQube Scanner
+        run: npm install -g sonar-scanner
+
       - name: SonarQube Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
