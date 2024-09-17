@@ -1,4 +1,4 @@
-name: CI - Node Tests & SonarQube Scan
+name: Node Tests & SonarQube Scan
 
 on:
   pull_request:
@@ -31,3 +31,9 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
+
+      - name: Check SonarQube Quality Gate
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
