@@ -1,12 +1,9 @@
 name: Deploy to Dev
 
 on:
-  workflow_run:
-    workflows:
-      - Node Tests & SonarQube Scan
-    types:
-      - completed
   pull_request:
+    types:
+      - closed
     branches:
       - develop
 
@@ -17,9 +14,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Build Docker image
+      - name: Build Docker image for Development
         run: |
-          docker build -t /Port-API-ShubhamSinghs-Dev .
+          docker build -f Dockerfile.dev -t ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest .
 
       - name: Log in to DockerHub
         uses: docker/login-action@v2
@@ -29,5 +26,5 @@ jobs:
 
       - name: Push Docker image
         run: |
-          docker tag /Port-API-ShubhamSinghs-Dev ${{ secrets.DOCKER_USERNAME }}/Port-API-ShubhamSinghs-Dev
-          docker push ${{ secrets.DOCKER_USERNAME }}/Port-API-ShubhamSinghs-Dev
+          docker tag ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest
