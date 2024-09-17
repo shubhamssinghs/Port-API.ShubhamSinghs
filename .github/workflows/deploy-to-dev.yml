@@ -1,6 +1,9 @@
 name: Deploy to Dev
 
 on:
+  pull_request:
+    branches:
+      - develop
   workflow_run:
     workflows:
       - Node Tests & SonarQube Scan
