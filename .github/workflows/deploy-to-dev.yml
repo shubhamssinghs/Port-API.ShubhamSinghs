@@ -1,13 +1,12 @@
 name: Deploy to Dev
 
 on:
+  workflow_dispatch:
   pull_request:
     types:
       - closed
     branches:
       - develop
-      
-  workflow_dispatch:
 
 jobs:
   deploy_to_dev:
