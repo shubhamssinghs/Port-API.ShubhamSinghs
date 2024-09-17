@@ -28,3 +28,30 @@ jobs:
         run: |
           docker tag ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest
+
+      - name: Set up SSH key for deployment
+        env:
+          DEV_SERVER_SSH_KEY: ${{ secrets.DEV_SERVER_DEPLOY_SSH_KEY }}
+        run: |
+          echo "$DEV_SERVER_SSH_KEY" | tr -d '\r' > dev_private_key.pem
+          chmod 600 dev_private_key.pem
+
+      - name: Deploy to staging server
+        env:
+          STAGING_SERVER_IP: ${{ secrets.DEV_SERVER_HOST }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+
+        run: |
+          ssh -o StrictHostKeyChecking=no -i dev_private_key.pem {{ secrets.DEV_SERVER_USERNAME }}@$STAGING_SERVER_IP << 'EOF'
+            docker pull ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest
+
+            docker stop port-api-shubhamshings-dev:latest || true
+            docker rm port-api-shubhamshings-dev:latest || true
+
+            # Run the new container
+            docker run -d --name port-api-shubhamshings-dev:latest -p 2128:2128 ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest
+          EOF
+
+      - name: Clean up SSH key
+        run: |
+          rm -f dev_private_key.pem
