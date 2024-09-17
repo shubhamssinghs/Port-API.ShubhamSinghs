@@ -42,13 +42,12 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
 
         run: |
-          ssh -o StrictHostKeyChecking=no -i dev_private_key.pem {{ secrets.DEV_SERVER_USERNAME }}@$STAGING_SERVER_IP << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i dev_private_key.pem -p 22 {{ secrets.DEV_SERVER_USERNAME }}@$STAGING_SERVER_IP << 'EOF'
             docker pull ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest
 
             docker stop port-api-shubhamshings-dev:latest || true
             docker rm port-api-shubhamshings-dev:latest || true
 
-            # Run the new container
             docker run -d --name port-api-shubhamshings-dev:latest -p 2128:2128 ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest
           EOF
 
