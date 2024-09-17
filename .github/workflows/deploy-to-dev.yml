@@ -1,12 +1,9 @@
 name: Deploy to Dev
 
 on:
-  workflow_run:
-    workflows:
-      - Node Tests & SonarQube Scan
-    types:
-      - completed
   pull_request:
+    types:
+      - closed
     branches:
       - develop
 
