@@ -1,7 +1,7 @@
 {
   "environment": "development",
   "server": {
-    "host": "0.0.0.0",
+    "host": "127.0.0.1",
     "port": 2128
   },
   "secrets": {
@@ -24,7 +24,11 @@
     }
   },
   "cors": {
-    "origins": ["postman-origin", "https://localhost:2821", "https://port-dev-api.shubhamsinghs.com"]
+    "origins": [
+      "postman-origin",
+      "https://localhost:2821",
+      "https://port-dev-api.shubhamsinghs.com"
+    ]
   },
   "logging": {
     "level": "database",
