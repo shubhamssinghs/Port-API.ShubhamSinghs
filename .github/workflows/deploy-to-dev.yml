@@ -38,7 +38,7 @@ jobs:
           password: ${{ secrets.DEV_SERVER_PASSWORD }}
           port: 22
           script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest
-            docker stop port-api-shubhamshings-dev:latest || true
-            docker rm port-api-shubhamshings-dev:latest || true
-            docker run -d --name port-api-shubhamshings-dev:latest -p 2128:2128 ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev
+            docker stop port-api-shubhamshings-dev || true
+            docker rm port-api-shubhamshings-dev || true
+            docker run -d --name port-api-shubhamshings-dev -p 2128:2128 ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev
