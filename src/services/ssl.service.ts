@@ -1,7 +1,7 @@
 import path from 'path';
 import * as fs from 'fs';
 import config from 'config';
-import { execSync } from 'child_process';
+import { spawnSync } from 'child_process';
 
 export const generateSSLCertificates = () => {
   const environment = config.get<string>('environment');
@@ -29,16 +29,18 @@ export const generateSSLCertificates = () => {
       // Change directory to 'cert'
       process.chdir(certDir);
 
-      execSync('openssl genrsa -out private.key 2048');
+      spawnSync('openssl genrsa -out private.key 2048', { shell: false });
 
       // Generate certificate signing request (CSR)
-      execSync(
-        `openssl req -new -key private.key -out csr.pem -subj "/CN=${host}"`
+      spawnSync(
+        `openssl req -new -key private.key -out csr.pem -subj "/CN=${host}"`,
+        { shell: false }
       );
 
       // Generate self-signed certificate
-      execSync(
-        'openssl x509 -req -days 365 -in csr.pem -signkey private.key -out certificate.crt'
+      spawnSync(
+        'openssl x509 -req -days 365 -in csr.pem -signkey private.key -out certificate.crt',
+        { shell: false }
       );
 
       // Delete CSR file
