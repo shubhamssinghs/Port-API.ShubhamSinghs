@@ -6,6 +6,8 @@ on:
       - closed
     branches:
       - develop
+      
+  workflow_dispatch:
 
 jobs:
   deploy_to_dev:
