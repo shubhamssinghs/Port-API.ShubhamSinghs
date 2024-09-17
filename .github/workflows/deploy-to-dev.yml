@@ -12,15 +12,14 @@ on:
 
 jobs:
   deploy_to_dev:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Build Docker image
+      - name: Build Docker image for Development
         run: |
-          docker build -t /Port-API-ShubhamSinghs-Dev .
+          docker build -f Dockerfile.dev -t ${{ secrets.DOCKER_USERNAME }}/Port-API-ShubhamSinghs-Dev:latest .
 
       - name: Log in to DockerHub
         uses: docker/login-action@v2
@@ -30,5 +29,5 @@ jobs:
 
       - name: Push Docker image
         run: |
-          docker tag /Port-API-ShubhamSinghs-Dev ${{ secrets.DOCKER_USERNAME }}/Port-API-ShubhamSinghs-Dev
-          docker push ${{ secrets.DOCKER_USERNAME }}/Port-API-ShubhamSinghs-Dev
+          docker tag /Port-API-ShubhamSinghs-Dev ${{ secrets.DOCKER_USERNAME }}/Port-API-ShubhamSinghs-Dev:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/Port-API-ShubhamSinghs-Dev:latest
