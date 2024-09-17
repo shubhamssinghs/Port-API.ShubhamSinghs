@@ -1,12 +1,11 @@
 name: Deploy to Dev
 
 on:
-  branches:
-    - develop
   workflow_run:
     workflows: ['Node Tests & SonarQube Scan']
     types:
       - completed
+  workflow_dispatch:
 
 jobs:
   deploy_to_dev:
