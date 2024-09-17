@@ -24,7 +24,7 @@
     }
   },
   "cors": {
-    "origins": ["postman-origin", "https://localhost:2821"]
+    "origins": ["postman-origin", "https://localhost:2821", "https://port-dev-api.shubhamsinghs.com"]
   },
   "logging": {
     "level": "database",
