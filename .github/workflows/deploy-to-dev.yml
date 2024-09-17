@@ -35,7 +35,7 @@ jobs:
         with:
           host: ${{ secrets.DEV_SERVER_HOST }}
           username: ${{ secrets.DEV_SERVER_USERNAME }}
-          key: ${{ secrets.DEV_SERVER_DEPLOY_SSH_KEY }}
+          password: ${{ secrets.DEV_SERVER_PASSWORD }}
           port: 22
           script: |
             docker pull ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest
