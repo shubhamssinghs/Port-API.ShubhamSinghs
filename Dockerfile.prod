@@ -1,0 +1,23 @@
+# Use the official Node.js image as a base image
+FROM node:17
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json (or yarn.lock) to the working directory
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy the rest of the application code to the working directory
+COPY . .
+
+# Build the application if needed
+# RUN npm run build  # Uncomment if you have a build step
+
+# Expose the port the app runs on
+EXPOSE 2828
+
+# Define the command to run the app in production mode
+CMD [ "npm", "start" ]

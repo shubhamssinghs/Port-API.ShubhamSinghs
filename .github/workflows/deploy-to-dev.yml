@@ -1,0 +1,44 @@
+name: Deploy to Dev
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - develop
+
+jobs:
+  deploy_to_dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build Docker image for Development
+        run: |
+          docker build -f Dockerfile.dev -t ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest .
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push Docker image
+        run: |
+          docker tag ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest
+
+      - name: Deploy to staging server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEV_SERVER_HOST }}
+          username: ${{ secrets.DEV_SERVER_USERNAME }}
+          key: ${{ secrets.DEV_SERVER_DEPLOY_SSH_KEY }}
+          port: 22
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest
+            docker stop port-api-shubhamshings-dev:latest || true
+            docker rm port-api-shubhamshings-dev:latest || true
+            docker run -d --name port-api-shubhamshings-dev:latest -p 2128:2128 ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest
