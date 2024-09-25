@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import config from 'config';
 import jwt from 'jsonwebtoken';
 
-import { User } from '../models';
+import { Role, User } from '../models';
 import { httpStatus, errorMessages, successMessages } from '../constants';
 import { emailService } from '../services';
 
@@ -80,7 +80,8 @@ class AuthController {
     try {
       const user = await User.scope(['withPassword', 'withVerifiedAt']).findOne(
         {
-          where: { email }
+          where: { email },
+          include: [{ model: Role, as: 'roles' }]
         }
       );
 
@@ -112,6 +113,8 @@ class AuthController {
         config.get('secrets.refresh_token_Expiry')
       );
 
+      console.log(user);
+
       res
         .status(httpStatus.OK)
         .cookie('auth-m-rt', refreshToken, {
@@ -123,7 +126,6 @@ class AuthController {
         .json({
           accessToken,
           user: {
-            uuid: user.uuid,
             name: user.name,
             email: user.email,
             active: user.active,

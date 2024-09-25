@@ -12,3 +12,4 @@ tmp/
 Dockerfile
 .dockerignore
 README.md
+.env

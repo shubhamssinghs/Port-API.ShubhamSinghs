@@ -15,9 +15,44 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Create environment file
+        run: |
+          echo "NODE_ENV=development" >> .env
+          echo "SERVER_HOST=0.0.0.0" >> .env
+          echo "SERVER_PORT=2128" >> .env
+
+          echo "ACCESS_TOKEN_SECRET=$(gh secret var ACCESS_TOKEN_SECRETS)" >> .env
+          echo "REFRESH_TOKEN_SECRET=$(gh secret var REFRESH_TOKEN_SECRETS)" >> .env
+          echo "EMAIL_VERIFICATION_SECRET=$(gh secret var EMAIL_VERIFICATION_SECRETS)" >> .env
+
+          echo "ACCESS_TOKEN_EXPIRY=1800000" >> .env
+          echo "REFRESH_TOKEN_EXPIRY=86400000" >> .env
+
+          echo "SMTP_USERNAME=" >> .env 
+          echo "SMTP_PASSWORD=" >> .env
+          echo "SMTP_HOST=" >> .env
+          echo "SMTP_PORT=" >> .env
+          echo "SMTP_SSL=" >> .env
+          echo "SMTP_SENDER_NAME=" >> .env
+          echo "SMTP_FROM_MAIL=" >> .env
+
+          echo "CORS_ALLOWED_ORIGINS=https://port-dev-api.shubhamsinghs.com" >> .env
+          echo "LOG_LEVEL=database" >> .env
+          echo "LOG_TIME_ZONE=Asia/Kolkata" >> .env
+
+      - name: Create Docker file
+        run: |
+          echo "FROM node:20" >> Docker
+          echo "WORKDIR /usr/src/app" >> Docker
+          echo "COPY package*.json ./" >> Docker
+          echo "RUN npm ci" >> Docker
+          echo "COPY .." >> Docker
+          echo "EXPOSE 2128" >> Docker
+          echo "CMD [ "npm", "run", "dev" ]" >> Docker
+
       - name: Build Docker image for Development
         run: |
-          docker build -f Dockerfile.dev -t ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest .
+          docker build -f . -t ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamssingh-dev:latest .
 
       - name: Log in to DockerHub
         uses: docker/login-action@v2
@@ -27,8 +62,8 @@ jobs:
 
       - name: Push Docker image
         run: |
-          docker tag ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev:latest
+          docker tag ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamssingh-dev:latest ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamssingh-dev:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamssingh-dev:latest
 
       - name: Deploy to staging server
         uses: appleboy/ssh-action@v1.0.3
@@ -39,7 +74,7 @@ jobs:
           port: ${{ secrets.DEPLOY_SERVER_PORT }}
 
           script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev
-            docker stop port-api-shubhamshings-dev || true
-            docker rm port-api-shubhamshings-dev || true
-            docker run -d --name port-api-shubhamshings-dev -p 2128:2128 ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamshings-dev
+            docker pull ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamssingh-dev
+            docker stop port-api-shubhamssingh-dev || true
+            docker rm port-api-shubhamssingh-dev || true
+            docker run -d --name port-api-shubhamssingh-dev -p 2128:2128 ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamssingh-dev

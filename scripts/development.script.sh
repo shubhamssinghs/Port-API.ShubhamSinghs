@@ -23,7 +23,7 @@ install_output=$(npm install 2>&1) && checkmark || error_exit "Failed to install
 
 # Setting Node environment
 echo -n "🛠  Setting Node environment to development"
-export NODE_ENV=development && checkmark || error_exit "Failed to set NODE_ENV to development."
+export NODE_ENV=local && checkmark || error_exit "Failed to set NODE_ENV to development."
 
 # Setting configuration directory
 echo -n "🗂️  Setting configuration directory"
@@ -32,6 +32,10 @@ export NODE_CONFIG_DIR=./src/config && checkmark || error_exit "Failed to set NO
 # Running migrations
 echo -n "🏃💨 Running migrations..."
 migrate_output=$(npx sequelize-cli db:migrate 2>&1) && checkmark || error_exit "Failed to run migrations:\n$migrate_output"
+
+# Running migrations
+echo -n "🌱 Seeding database..."
+migrate_output=$(npx sequelize-cli db:seed 2>&1) && checkmark || error_exit "Failed to run migrations:\n$migrate_output"
 
 # Start the server
 echo "🌐 Starting local development server..."
