@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import config from 'config';
 import jwt from 'jsonwebtoken';
 
-import { Role, User } from '../models';
+import { User } from '../models';
 import { httpStatus, errorMessages, successMessages } from '../constants';
 import { emailService } from '../services';
 
@@ -79,10 +79,7 @@ class AuthController {
 
     try {
       const user = await User.scope(['withPassword', 'withVerifiedAt']).findOne(
-        {
-          where: { email },
-          include: [{ model: Role, as: 'roles' }]
-        }
+        { where: { email } }
       );
 
       if (!user)

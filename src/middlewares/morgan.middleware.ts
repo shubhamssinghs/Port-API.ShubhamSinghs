@@ -1,6 +1,7 @@
+require('dotenv').config();
+
 /* eslint-disable indent */
 import { Express, Request } from 'express';
-import config from 'config';
 import morgan from 'morgan';
 import json from 'morgan-json';
 import moment from 'moment-timezone';
@@ -9,8 +10,8 @@ import path from 'path';
 import { Writable } from 'stream';
 import uuid from 'node-uuid';
 
-const loggingLevel = config.get<string>('logging.level');
-const loggingTimezone = config.get<string>('logging.timezone');
+const loggingLevel = process.env.LOG_LEVEL || 'default';
+const loggingTimezone = process.env.LOG_TIME_ZONE || 'Asia/Kolkata';
 
 class DBStream extends Writable {
   async _write(chunk: Buffer, _: unknown, callback: () => void) {

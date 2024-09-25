@@ -19,7 +19,7 @@ export default class SetUpApplicationService {
     this._env = process.env.NODE_ENV;
     this._host = process.env.SERVER_HOST;
     this._port = Number(process.env.SERVER_PORT);
-    this._initSwagger = this._env === 'development';
+    this._initSwagger = this._env === 'development' || this._env === 'local';
 
     this._app = express();
     this._routes = routes;

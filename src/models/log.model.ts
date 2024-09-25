@@ -48,7 +48,7 @@ class Log extends Model<LogAttributes> {
   }
 }
 
-Log.initialize(sequelize);
+sequelize && Log.initialize(sequelize);
 Log.applyScopes();
 
 export default Log;

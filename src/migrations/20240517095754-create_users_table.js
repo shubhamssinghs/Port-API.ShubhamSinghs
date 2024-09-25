@@ -7,8 +7,7 @@ module.exports = {
       uuid: {
         type: Sequelize.UUID,
         allowNull: false,
-        primaryKey: true,
-        defaultValue: Sequelize.UUIDV4
+        primaryKey: true
       },
       name: {
         type: Sequelize.STRING,
@@ -16,8 +15,7 @@ module.exports = {
       },
       email: {
         type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
+        allowNull: false
       },
       password: {
         type: Sequelize.STRING,
@@ -45,25 +43,13 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: true
       },
-      role_id: {
-        type: Sequelize.UUID,
-        allowNull: true,
-        references: {
-          model: 'roles',
-          key: 'uuid'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
-      },
       created_at: {
         type: Sequelize.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+        allowNull: false
       },
       updated_at: {
         type: Sequelize.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+        allowNull: false
       }
     });
   },
