@@ -48,7 +48,7 @@ jobs:
           echo "RUN npm ci" >> Dockerfile
           echo "COPY . ." >> Dockerfile
           echo "EXPOSE 2128" >> Dockerfile
-          echo "CMD "npm run dev" >> Dockerfile
+          echo "CMD ["npm", "run", "dev"]" >> Dockerfile
 
       - name: Build Docker image for Development
         run: |
