@@ -21,9 +21,9 @@ jobs:
           echo "SERVER_HOST=0.0.0.0" >> .env
           echo "SERVER_PORT=2128" >> .env
 
-          echo "ACCESS_TOKEN_SECRET=$(gh secret get ACCESS_TOKEN_SECRETS)" >> .env
-          echo "REFRESH_TOKEN_SECRET=$(gh secret get REFRESH_TOKEN_SECRETS)" >> .env
-          echo "EMAIL_VERIFICATION_SECRET=$(gh secret get EMAIL_VERIFICATION_SECRETS)" >> .env
+          echo "ACCESS_TOKEN_SECRET=abcd" >> .env
+          echo "REFRESH_TOKEN_SECRET=qwer" >> .env
+          echo "EMAIL_VERIFICATION_SECRET=yuiop" >> .env
 
           echo "ACCESS_TOKEN_EXPIRY=1800000" >> .env
           echo "REFRESH_TOKEN_EXPIRY=86400000" >> .env
@@ -46,7 +46,7 @@ jobs:
           echo "WORKDIR /usr/src/app" >> Dockerfile
           echo "COPY package*.json ./" >> Dockerfile
           echo "RUN npm ci" >> Dockerfile
-          echo "COPY .." >> Dockerfile
+          echo "COPY . ." >> Dockerfile
           echo "EXPOSE 2128" >> Dockerfile
           echo "CMD [ "npm", "run", "dev" ]" >> Dockerfile
 
