@@ -7,6 +7,7 @@
     "start": "bash scripts/production.script.sh",
     "dev": "bash scripts/development.script.sh",
     "gm": "bash scripts/generate-migration.script.sh",
+    "gs": "bash scripts/generate-seeder.script.sh",
     "test:dev": "bash scripts/test.development.script.sh",
     "test:prod": "bash scripts/test.production.script.sh",
     "prettier": "npx prettier --write src/**/*.ts",
@@ -14,6 +15,8 @@
     "precommit": "",
     "migrate": "npx sequelize-cli db:migrate",
     "migrate:undo": "npx sequelize-cli db:migrate:undo",
+    "seed": "npx sequelize-cli db:seed:all",
+    "seed:undo": "npx sequelize-cli db:seed:undo:all",
     "prepare": "husky install"
   },
   "husky": {

@@ -2,6 +2,7 @@ import { Sequelize, Model, DataTypes } from 'sequelize';
 
 import { sequelize } from '../database';
 import { avatar } from '../utils';
+import Role from './role.model';
 
 export interface UserAttributes {
   uuid?: string;
@@ -13,6 +14,7 @@ export interface UserAttributes {
   verification_token?: string;
   verification_token_expires?: Date | null;
   verified_at?: Date;
+  roleId?: string;
 }
 
 class User extends Model<UserAttributes> {
@@ -25,6 +27,7 @@ class User extends Model<UserAttributes> {
   public verification_token!: string;
   public verification_token_expires!: Date | null;
   public verified_at!: Date;
+  public roleId!: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -45,7 +48,8 @@ class User extends Model<UserAttributes> {
         },
         email: {
           type: DataTypes.STRING,
-          allowNull: false
+          allowNull: false,
+          unique: true
         },
         password: {
           type: DataTypes.STRING,
@@ -71,6 +75,16 @@ class User extends Model<UserAttributes> {
         verified_at: {
           type: DataTypes.DATE,
           allowNull: true
+        },
+        roleId: {
+          type: DataTypes.UUID,
+          allowNull: true,
+          references: {
+            model: 'roles',
+            key: 'uuid'
+          },
+          onUpdate: 'CASCADE',
+          onDelete: 'SET NULL'
         }
       },
       {
@@ -88,6 +102,13 @@ class User extends Model<UserAttributes> {
         }
       }
     );
+  }
+
+  public static associate(models: { Role: typeof Role }): void {
+    this.belongsTo(models.Role, {
+      foreignKey: 'roleId',
+      as: 'role'
+    });
   }
 
   public static applyScopes(): void {

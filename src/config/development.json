@@ -16,7 +16,7 @@
     "host": "sandbox.smtp.mailtrap.io",
     "port": 2525,
     "secure": false,
-    "name": "Auth-m",
+    "name": "Shubham Singh",
     "from": "no-reply@auth-m.com",
     "auth": {
       "user": "eab8f0b141fc80",

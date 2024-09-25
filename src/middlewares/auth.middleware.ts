@@ -1,4 +1,5 @@
-import config from 'config';
+require('dotenv').config();
+
 import jwt, { VerifyErrors } from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
 import { NextFunction, Request, Response } from 'express';
@@ -37,12 +38,19 @@ export const verifyToken = (
 
   const token = authHeader && authHeader.split(' ')[1];
 
-  if (token === null)
+  if (!token) {
     return res
       .status(httpStatus.Unauthorized)
       .json({ error: errorMessages.TokenNotProvided });
+  }
 
-  const accessTokenSecret = config.get<string>('secrets.access_token');
+  const accessTokenSecret = process.env.ACCESS_TOKEN_SECRETS;
+
+  if (!accessTokenSecret) {
+    return res
+      .status(httpStatus.Forbidden)
+      .json({ error: errorMessages.TokenVerificationFailed });
+  }
 
   jwt.verify(
     token,

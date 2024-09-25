@@ -11,7 +11,7 @@
   "local": {
     "username": "root",
     "password": null,
-    "database": "auth-m",
+    "database": "port-shubham-singh-dev-db",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "migrationStorage": "sequelize",
