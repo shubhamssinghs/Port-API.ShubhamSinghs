@@ -53,6 +53,8 @@ jobs:
             sudo apt-get install -y docker-compose
 
             echo "ENV=${{ vars.ENV }}" >> .env
+            echo "APP_URL=${{ vars.APP_URL }}" >> .env
+            echo "APP_NAME=${{ vars.APP_NAME }}" >> .env
             echo "SERVER_HOST=${{ vars.SERVER_HOST }}" >> .env
             echo "SERVER_PORT=${{ vars.SERVER_PORT }}" >> .env
             echo "ACCESS_TOKEN_SECRET=${{ vars.ACCESS_TOKEN_SECRET }}" >> .env

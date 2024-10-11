@@ -87,7 +87,11 @@ const sendEmail = async ({
     );
     const htmlTemplate = readHTMLFile(templatePath);
     const compiledTemplate = handlebars.compile(htmlTemplate);
-    htmlContent = compiledTemplate(data);
+    htmlContent = compiledTemplate({
+      ...data,
+      app_url: process.env.APP_URL,
+      app_name: process.env.APP_NAME
+    });
   }
 
   const mailOptions: SendMailOptions = {
