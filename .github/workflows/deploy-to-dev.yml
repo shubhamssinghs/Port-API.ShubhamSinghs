@@ -60,6 +60,7 @@ jobs:
             echo "EMAIL_VERIFICATION_SECRET=${{ vars.EMAIL_VERIFICATION_SECRET }}" >> .env
             echo "ACCESS_TOKEN_EXPIRY=${{ vars.ACCESS_TOKEN_EXPIRY }}" >> .env
             echo "REFRESH_TOKEN_EXPIRY=${{ vars.REFRESH_TOKEN_EXPIRY }}" >> .env
+            echo "EMAIL_VERIFICATION_TOKEN_EXPIRY=${{ vars.EMAIL_VERIFICATION_TOKEN_EXPIRY }}" >> .env
             echo "SMTP_USERNAME=${{ vars.SMTP_USERNAME }}" >> .env 
             echo "SMTP_PASSWORD=${{ vars.SMTP_PASSWORD }}" >> .env
             echo "SMTP_HOST=${{ vars.SMTP_HOST }}" >> .env
