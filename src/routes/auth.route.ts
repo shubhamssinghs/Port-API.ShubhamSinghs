@@ -12,7 +12,7 @@ import {
 
 const router = Router();
 
-const environment = process.env.NODE_ENV;
+const environment = process.env.ENV;
 const isProduction = environment === 'production';
 
 if (isProduction) {

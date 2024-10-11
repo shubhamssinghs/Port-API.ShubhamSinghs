@@ -16,7 +16,7 @@ export default class SetUpApplicationService {
   private _initSwagger: boolean;
 
   constructor(routes: Router) {
-    this._env = process.env.NODE_ENV;
+    this._env = process.env.ENV;
     this._host = process.env.SERVER_HOST;
     this._port = Number(process.env.SERVER_PORT);
     this._initSwagger = this._env === 'development' || this._env === 'local';
@@ -26,7 +26,7 @@ export default class SetUpApplicationService {
 
     if (!this._env || !this._host || isNaN(this._port) || this._port <= 0) {
       throw new Error(
-        'Environment variables NODE_ENV, SERVER_HOST, and SERVER_PORT must be defined and valid.'
+        'Environment variables ENV, SERVER_HOST, and SERVER_PORT must be defined and valid.'
       );
     }
 
