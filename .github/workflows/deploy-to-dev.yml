@@ -16,31 +16,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Create .env and Dockerfile
-        run: |
-          echo "ENV=${{ vars.ENV }}" >> .env
-          echo "SERVER_HOST=${{ vars.SERVER_HOST }}" >> .env
-          echo "SERVER_PORT=${{ vars.SERVER_PORT }}" >> .env
-          echo "ACCESS_TOKEN_SECRET=${{ vars.ACCESS_TOKEN_SECRET }}" >> .env
-          echo "REFRESH_TOKEN_SECRET=${{ vars.REFRESH_TOKEN_SECRET }}" >> .env
-          echo "EMAIL_VERIFICATION_SECRET=${{ vars.EMAIL_VERIFICATION_SECRET }}" >> .env
-          echo "ACCESS_TOKEN_EXPIRY=${{ vars.ACCESS_TOKEN_EXPIRY }}" >> .env
-          echo "REFRESH_TOKEN_EXPIRY=${{ vars.REFRESH_TOKEN_EXPIRY }}" >> .env
-          echo "SMTP_USERNAME=${{ vars.SMTP_USERNAME }}" >> .env 
-          echo "SMTP_PASSWORD=${{ vars.SMTP_PASSWORD }}" >> .env
-          echo "SMTP_HOST=${{ vars.SMTP_HOST }}" >> .env
-          echo "SMTP_PORT=${{ vars.SMTP_PORT }}" >> .env
-          echo "SMTP_SSL=${{ vars.SMTP_SSL }}" >> .env
-          echo "SMTP_SENDER_NAME=${{ vars.SMTP_SENDER_NAME }}" >> .env
-          echo "SMTP_FROM_MAIL=${{ vars.SMTP_FROM_MAIL }}" >> .env
-          echo "DB_HOST=${{ vars.DB_HOST }}" >> .env
-          echo "DB_USERNAME=${{ vars.DB_USERNAME }}" >> .env
-          echo "DB_PASSWORD=${{ vars.DB_PASSWORD }}" >> .env
-          echo "DB_DATABASE=${{ vars.DB_DATABASE }}" >> .env
-          echo "CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}" >> .env
-          echo "LOG_LEVEL=database" >> .env
-          echo "LOG_TIME_ZONE=Asia/Kolkata" >> .env
-
       - name: Create Dockerfile
         run: |
           echo "FROM node:${{ vars.DOCKER_NODE_VERSION }}" >> Dockerfile
@@ -66,7 +41,7 @@ jobs:
           docker tag ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }} ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}
 
-      - name: Deploy to staging server
+      - name: Deploy to Development Server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.DEPLOY_SERVER_HOST }}
@@ -76,6 +51,29 @@ jobs:
           script: |
             sudo apt-get update
             sudo apt-get install -y docker-compose
+
+            echo "ENV=${{ vars.ENV }}" >> .env
+            echo "SERVER_HOST=${{ vars.SERVER_HOST }}" >> .env
+            echo "SERVER_PORT=${{ vars.SERVER_PORT }}" >> .env
+            echo "ACCESS_TOKEN_SECRET=${{ vars.ACCESS_TOKEN_SECRET }}" >> .env
+            echo "REFRESH_TOKEN_SECRET=${{ vars.REFRESH_TOKEN_SECRET }}" >> .env
+            echo "EMAIL_VERIFICATION_SECRET=${{ vars.EMAIL_VERIFICATION_SECRET }}" >> .env
+            echo "ACCESS_TOKEN_EXPIRY=${{ vars.ACCESS_TOKEN_EXPIRY }}" >> .env
+            echo "REFRESH_TOKEN_EXPIRY=${{ vars.REFRESH_TOKEN_EXPIRY }}" >> .env
+            echo "SMTP_USERNAME=${{ vars.SMTP_USERNAME }}" >> .env 
+            echo "SMTP_PASSWORD=${{ vars.SMTP_PASSWORD }}" >> .env
+            echo "SMTP_HOST=${{ vars.SMTP_HOST }}" >> .env
+            echo "SMTP_PORT=${{ vars.SMTP_PORT }}" >> .env
+            echo "SMTP_SSL=${{ vars.SMTP_SSL }}" >> .env
+            echo "SMTP_SENDER_NAME=${{ vars.SMTP_SENDER_NAME }}" >> .env
+            echo "SMTP_FROM_MAIL=${{ vars.SMTP_FROM_MAIL }}" >> .env
+            echo "DB_HOST=${{ vars.DB_HOST }}" >> .env
+            echo "DB_USERNAME=${{ vars.DB_USERNAME }}" >> .env
+            echo "DB_PASSWORD=${{ vars.DB_PASSWORD }}" >> .env
+            echo "DB_DATABASE=${{ vars.DB_DATABASE }}" >> .env
+            echo "CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}" >> .env
+            echo "LOG_LEVEL=database" >> .env
+            echo "LOG_TIME_ZONE=Asia/Kolkata" >> .env
 
             echo "version: '3.8'" > docker-compose.yml
             echo "services:" >> docker-compose.yml
