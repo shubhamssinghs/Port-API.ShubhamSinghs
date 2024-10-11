@@ -7,7 +7,7 @@ tags:
     description: APIs related to email verification and account activation
 
 paths:
-  /api/auth/register:
+  /auth/register:
     post:
       summary: Register a new user
       tags: [Registration]
@@ -44,7 +44,7 @@ paths:
         '500':
           description: Internal Server Error, unable to create user.
 
-  /api/auth/login:
+  /auth/login:
     post:
       summary: Login user
       tags: [Authentication]
@@ -82,7 +82,7 @@ paths:
         '500':
           description: Internal Server Error, unable to log in.
 
-  /api/auth/logout:
+  /auth/logout:
     post:
       summary: Logout user
       tags: [Authentication]
@@ -96,7 +96,7 @@ paths:
         '500':
           description: Internal Server Error. Unable to logout.
 
-  /api/auth/refresh-token:
+  /auth/refresh-token:
     post:
       summary: Refresh Access Token
       tags: [Authentication]
@@ -110,7 +110,7 @@ paths:
         '500':
           description: Internal Server Error. Unable to refresh token.
 
-  /api/auth/send-verification-email:
+  /auth/send-verification-email:
     post:
       summary: Send email verification token
       tags: [Email Verification]
@@ -142,7 +142,7 @@ paths:
         '500':
           description: Internal Server Error. Unable to send the email verification link.
 
-  /api/auth/verify-email/{token}:
+  /auth/verify-email/{token}:
     get:
       summary: Verify email token
       tags: [Email Verification]

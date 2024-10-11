@@ -11,7 +11,7 @@ const options: OAS3Options = {
       title: 'Port-API.ShubhamSinghs API Documentation',
       version,
       description:
-        'API documentation for Port-API.ShubhamSinghs </br> Click the link to download the JSON file: <a href="/api/swagger.json">Download Swagger JSON</a>'
+        'API documentation for Port-API.ShubhamSinghs </br> Click the link to download the JSON file: <a href="/swagger/Port-API.ShubhamSinghs.json">Download Port-API.ShubhamSinghs JSON</a>'
     },
     components: {
       securitySchemes: {
@@ -28,11 +28,14 @@ const options: OAS3Options = {
 const swaggerSpec = swaggerJSDoc(options);
 
 const setupSwagger = (app: Express) => {
-  app.use('/api/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-  app.get('/api/swagger.json', (_req, res) => {
+  app.get('/swagger/Port-API.ShubhamSinghs.json', (_req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Content-Disposition', 'attachment; filename="swagger.json"');
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename="Port-API.ShubhamSinghs.json"'
+    );
     res.send(swaggerSpec);
   });
 };

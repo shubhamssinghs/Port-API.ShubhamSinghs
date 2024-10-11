@@ -44,11 +44,7 @@ export default class SetUpApplicationService {
       setupSwagger(this._app);
     }
 
-    this._app.get('/', (_, res) => {
-      console.log('Redirecting to /api');
-      res.redirect('/api');
-    });
-    this._app.use('/api', this._routes);
+    this._app.use(this._routes);
   }
 
   startApplication() {
@@ -56,11 +52,11 @@ export default class SetUpApplicationService {
 
     httpServer.listen(this._port, this._host, () => {
       console.log(
-        `✅ Server is running at http://${this._host}:${this._port}/api using ${this._env} configuration.`
+        `✅ Server is running at http://${this._host}:${this._port}/ using ${this._env} configuration.`
       );
       if (this._initSwagger) {
         console.log(
-          `📘 Swagger docs are available at http://${this._host}:${this._port}/api/api-docs`
+          `📘 Swagger docs are available at http://${this._host}:${this._port}/api-docs`
         );
       }
     });

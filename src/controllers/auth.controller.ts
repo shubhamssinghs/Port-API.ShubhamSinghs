@@ -1,7 +1,8 @@
+require('dotenv').config();
+
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
-import config from 'config';
 import jwt from 'jsonwebtoken';
 
 import { User } from '../models';
@@ -101,16 +102,14 @@ class AuthController {
 
       const accessToken = this.generateToken(
         user.email,
-        config.get('secrets.access_token'),
-        config.get('secrets.access_token_expiry')
+        process.env.ACCESS_TOKEN_SECRETS!,
+        process.env.ACCESS_TOKEN_EXPIRY!
       );
       const refreshToken = this.generateToken(
         user.email,
-        config.get('secrets.refresh_token'),
-        config.get('secrets.refresh_token_Expiry')
+        process.env.REFRESH_TOKEN_SECRETS!,
+        process.env.REFRESH_TOKEN_EXPIRY!
       );
-
-      console.log(user);
 
       res
         .status(httpStatus.OK)
@@ -118,7 +117,7 @@ class AuthController {
           httpOnly: true,
           secure: true,
           sameSite: 'none',
-          maxAge: config.get('secrets.refresh_token_Expiry')
+          maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRY || '0', 10)
         })
         .json({
           accessToken,
@@ -166,12 +165,12 @@ class AuthController {
     try {
       const { email } = jwt.verify(
         cookies['auth-m-rt'],
-        config.get('secrets.refresh_token')
+        process.env.REFRESH_TOKEN_SECRETS!
       ) as { email: string };
       const accessToken = this.generateToken(
         email,
-        config.get('secrets.access_token'),
-        config.get('secrets.access_token_expiry')
+        process.env.ACCESS_TOKEN_SECRETS!,
+        process.env.ACCESS_TOKEN_EXPIRY!
       );
 
       res
@@ -212,8 +211,8 @@ class AuthController {
 
       const token = this.generateToken(
         email,
-        config.get('secrets.email_verification_token'),
-        config.get('secrets.email_verification_token_expiry')
+        process.env.EMAIL_VERIFICATION_SECRETS!,
+        process.env.EMAIL_VERIFIACTION_TOKEN_EXPIRY!
       );
       user.verification_token = token;
       user.verification_token_expires = new Date(Date.now() + 10 * 60 * 1000);
@@ -247,9 +246,7 @@ class AuthController {
         .json({ error: errorMessages.TokenNotFound });
 
     try {
-      const emailVerificationSecret = config.get<string>(
-        'secrets.email_verification_token'
-      );
+      const emailVerificationSecret = process.env.EMAIL_VERIFICATION_SECRETS!;
       const decoded = jwt.verify(token, emailVerificationSecret) as {
         email: string;
       };

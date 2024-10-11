@@ -14,10 +14,6 @@ npm install || error_exit "Failed to install dependencies."
 echo -n "🏃💨 Running migrations..."
 npm run migrate || error_exit "Failed to run migrations."
 
-# Seeding the database
-echo -n "🌱 Seeding database..."
-npm run seed || error_exit "Failed to seed the database."
-
 # Start the server
 echo "🌐 Starting  server..."
 cross-env ts-node src/server.ts || error_exit "Failed to start the server."
