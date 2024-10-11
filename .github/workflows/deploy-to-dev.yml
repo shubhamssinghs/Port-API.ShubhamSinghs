@@ -41,6 +41,8 @@ jobs:
           echo "LOG_LEVEL=database" >> .env
           echo "LOG_TIME_ZONE=Asia/Kolkata" >> .env
 
+      - name: Create Dockerfile
+        run: |
           echo "FROM node:${{ vars.DOCKER_NODE_VERSION }}" >> Dockerfile
           echo "WORKDIR /usr/src/app" >> Dockerfile
           echo "COPY package*.json ./" >> Dockerfile
@@ -48,6 +50,20 @@ jobs:
           echo "COPY . ." >> Dockerfile
           echo "EXPOSE ${{ vars.SERVER_PORT }}" >> Dockerfile
           echo 'CMD ["npm", "start"]' >> Dockerfile
+
+      - name: Create docker-compose.yml file
+        run: |
+          echo "version: '3.8'" >> docker-compose.yml
+          echo "services:" >> docker-compose.yml
+          echo "  app:" >> docker-compose.yml
+          echo "    image: ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}" >> docker-compose.yml
+          echo "    build:" >> docker-compose.yml
+          echo "      context: ." >> docker-compose.yml
+          echo "      dockerfile: Dockerfile" >> docker-compose.yml
+          echo "    env_file:" >> docker-compose.yml
+          echo "      - .env" >> docker-compose.yml
+          echo "    ports:" >> docker-compose.yml
+          echo "      - \"\${{ vars.SERVER_PORT }}:\${{ vars.SERVER_PORT }}\"" >> docker-compose.yml
 
       - name: Copy .env file to project root
         run: |
@@ -76,7 +92,6 @@ jobs:
           password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
           port: ${{ secrets.DEPLOY_SERVER_PORT }}
           script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}
-            docker stop ${{ vars.DOCKER_IMAGE_NAME }} || true
-            docker rm ${{ vars.DOCKER_IMAGE_NAME }} || true
-            docker run -d --name ${{ vars.DOCKER_IMAGE_NAME }} -p ${{ vars.SERVER_PORT }}:${{ vars.SERVER_PORT }} ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}
+            docker-compose -f docker-compose.yml pull
+            docker-compose -f docker-compose.yml down
+            docker-compose -f docker-compose.yml up -d
