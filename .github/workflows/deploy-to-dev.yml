@@ -88,6 +88,8 @@ jobs:
           password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
           port: ${{ secrets.DEPLOY_SERVER_PORT }}
           script: |
+            sudo apt-get update
+            sudo apt-get install -y docker-compose
             docker-compose -f docker-compose.yml pull
             docker-compose -f docker-compose.yml down
             docker-compose -f docker-compose.yml up -d
