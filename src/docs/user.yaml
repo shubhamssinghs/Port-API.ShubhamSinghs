@@ -3,7 +3,7 @@ tags:
     description: APIs related to users
 
 paths:
-  /api/user/all:
+  /user/all:
     get:
       summary: Get all users
       tags: [Users]
@@ -20,7 +20,7 @@ paths:
         '500':
           description: Internal Server Error
 
-  /api/user/{uuid}:
+  /user/{uuid}:
     get:
       summary: Get user by UUID
       tags: [Users]
@@ -48,7 +48,7 @@ paths:
         '500':
           description: Internal Server Error
 
-  /api/user/{uuid}/update:
+  /user/{uuid}/update:
     put:
       summary: Update a user by UUID
       tags: [Users]
@@ -94,7 +94,7 @@ paths:
         '500':
           description: Internal Server Error. Unable to update user.
 
-  /api/user/{uuid}/delete:
+  /user/{uuid}/delete:
     delete:
       summary: Delete a user by UUID
       tags: [Users]

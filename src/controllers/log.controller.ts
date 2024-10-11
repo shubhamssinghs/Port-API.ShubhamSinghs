@@ -11,6 +11,7 @@ class LogController {
   public async getAllLogs(_req: Request, res: Response) {
     try {
       const logs = await Log.findAll();
+
       res.status(httpStatus.OK).json({ logs });
     } catch (error) {
       console.error(

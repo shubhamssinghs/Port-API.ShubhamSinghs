@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 import { readFileSync } from 'fs';
 import handlebars from 'handlebars';
 import nodemailer, {
@@ -5,7 +7,6 @@ import nodemailer, {
   TransportOptions,
   Transporter
 } from 'nodemailer';
-import config from 'config';
 import path from 'path';
 
 interface EmailPayload {
@@ -26,13 +27,13 @@ interface CustomTransportOptions extends TransportOptions {
   };
 }
 
-const mailFrom = config.get<string>('mail.from');
-const mailFromName = config.get<string>('mail.name');
-const host = config.get<string>('mail.host');
-const port = config.get<number>('mail.port');
-const secure = config.get<boolean>('mail.secure');
-const user = config.get<string>('mail.auth.user');
-const pass = config.get<string>('mail.auth.pass');
+const mailFrom = process.env.SMTP_FROM_MAIL || '';
+const mailFromName = process.env.SMTP_SENDER_NAME || '';
+const host = process.env.SMTP_HOST || '';
+const port = +(process.env.SMTP_PORT || 3306);
+const secure = Boolean(process.env.SMTP_SSL);
+const user = process.env.SMTP_USERNAME || '';
+const pass = process.env.SMTP_PASSWORD || '';
 
 const senderAddress = `"${mailFromName}" <${mailFrom}>`;
 
@@ -86,7 +87,11 @@ const sendEmail = async ({
     );
     const htmlTemplate = readHTMLFile(templatePath);
     const compiledTemplate = handlebars.compile(htmlTemplate);
-    htmlContent = compiledTemplate(data);
+    htmlContent = compiledTemplate({
+      ...data,
+      app_url: process.env.APP_URL,
+      app_name: process.env.APP_NAME
+    });
   }
 
   const mailOptions: SendMailOptions = {

@@ -129,47 +129,4 @@ describe('User Controller', () => {
       expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
     });
   });
-
-  // describe('/api/user/:uuid/update', () => {
-  //   const updateUserRoute = '/api/user/:uuid?/update';
-  //   app.put(updateUserRoute, userController.updateUser);
-
-  //   it('should update the user name, email, and img', async () => {
-  //     const mockCurrentUser = {
-  //       uuid: '9bc237b6-ee7f-48ae-a0a1-e4c7f820f7df',
-  //       name: 'Test User',
-  //       email: 'test@test.com',
-  //       img: null,
-  //       active: true,
-  //       created_at: '2024-05-20 11:09:44',
-  //       updated_at: '2024-05-21 09:24:10'
-  //     };
-
-  //     (User.findByPk as jest.Mock).mockResolvedValue(mockCurrentUser);
-
-  //     const updatedData = {
-  //       name: 'User',
-  //       email: '1@test.com',
-  //       img: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAoUlEQVR4AWP4DwcMDBgwYJgYGBiYmBgAAOrIINkCkZGRkYGBgYGBgYGBgYGJiYmBiYmBgYGBgYGBg4GBoAAmM5F9g2yFB8AAAAASUVORK5CYII='
-  //     };
-
-  //     const response = await request(app)
-  //       .put('/api/user/9bc237b6-ee7f-48ae-a0a1-e4c7f820f7df/update')
-  //       .send(updatedData);
-
-  //     console.log(response);
-
-  //     const expectedUpdatedUser = {
-  //       ...mockCurrentUser,
-  //       name: updatedData.name,
-  //       email: updatedData.email,
-  //       img: updatedData.img
-  //     };
-
-  //     expect(response.status).toBe(httpStatus.OK);
-  //     expect(response.body.message).toBe(successMessages.UserUpdateSuccess);
-  //     expect(response.body.user).toEqual(expectedUpdatedUser);
-  //     expect(User.findByPk).toHaveBeenCalledTimes(1);
-  //   });
-  // });
 });

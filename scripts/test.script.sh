@@ -17,13 +17,6 @@ error_exit() {
   exit 1
 }
 
-# Setting Node environment
-echo -n "🛠  Setting Node environment to production..."
-export NODE_ENV=production && checkmark || error_exit "Failed to set NODE_ENV to production."
-
-# Setting configuration directory
-echo -n "🗂️  Setting configuration directory..."
-export NODE_CONFIG_DIR=./src/config && checkmark || error_exit "Failed to set NODE_CONFIG_DIR."
 
 # Testing the application now
 echo "🏗️  Testing the application now..."

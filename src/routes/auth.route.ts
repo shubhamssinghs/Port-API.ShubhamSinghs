@@ -1,5 +1,6 @@
+require('dotenv').config();
+
 import { Router } from 'express';
-import config from 'config';
 
 import { authController } from '../controllers';
 import { auth as authMiddleware } from '../middlewares';
@@ -11,7 +12,7 @@ import {
 
 const router = Router();
 
-const environment = config.get<string>('environment');
+const environment = process.env.ENV;
 const isProduction = environment === 'production';
 
 if (isProduction) {

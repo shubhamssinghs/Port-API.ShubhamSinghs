@@ -24,5 +24,6 @@
   "InvalidBase64": "Image must be provided in base64 format.",
   "RedirectUrlRequired": "Must provide redirection url.",
   "UserDeleteFailed": "User deletion failed.",
-  "EmailVerificationRequired": "Email verification is required to proceed."
+  "EmailVerificationRequired": "Email verification is required to proceed.",
+  "CORSError": "CORS Error: Origin not allowed"
 }

@@ -5,28 +5,24 @@
     "node": true,
     "jest": true
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier"
-  ],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "prettier"],
+  "plugins": ["@typescript-eslint"],
   "rules": {
-    "prettier/prettier": "error", // Ensures that code formatting is consistent
-    "semi": ["error", "always"], // Enforce semicolons at the end of statements
-    "quotes": ["error", "single"], // Enforce single quotes for string literals
-    "indent": ["error", 2], // Enforce 2-space indentation
-    "comma-dangle": ["error", "never"], // Disallow trailing commas in object and array literals
-    "no-console": "off", // Allow console statements for development (turn off in production)
-    "no-unused-vars": "warn", // Warn about unused variables
-    "no-undef": "error", // Disallow the use of undeclared variables
-    "no-extra-semi": "error", // Disallow unnecessary semicolons
-    "no-trailing-spaces": "error", // Disallow trailing whitespace
-    "eol-last": ["error", "always"] // Enforce newline at the end of file
+    "semi": ["error", "always"],
+    "quotes": ["error", "single"],
+    "indent": ["error", 2],
+    "comma-dangle": ["error", "never"],
+    "no-console": "off",
+    "no-unused-vars": "warn",
+    "no-undef": "error",
+    "no-extra-semi": "error",
+    "no-trailing-spaces": "error",
+    "eol-last": ["error", "always"],
+    "@typescript-eslint/no-var-requires": "off"
   }
 }

@@ -27,7 +27,17 @@ class Log extends Model<LogAttributes> {
           type: DataTypes.JSON,
           allowNull: false,
           get() {
-            return JSON.parse(JSON.stringify(this.getDataValue('log')));
+            const logData = this.getDataValue('log');
+            const parsedLogData =
+              typeof logData === 'string' ? JSON.parse(logData) : logData;
+            if (parsedLogData && typeof parsedLogData === 'object') {
+              parsedLogData.payload = JSON.parse(parsedLogData.payload);
+              parsedLogData['response-headers'] = JSON.parse(
+                parsedLogData['response-headers']
+              );
+            }
+
+            return parsedLogData;
           }
         }
       },
@@ -48,7 +58,7 @@ class Log extends Model<LogAttributes> {
   }
 }
 
-Log.initialize(sequelize);
+sequelize && Log.initialize(sequelize);
 Log.applyScopes();
 
 export default Log;

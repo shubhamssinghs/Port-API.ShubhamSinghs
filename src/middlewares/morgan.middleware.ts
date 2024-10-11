@@ -1,16 +1,17 @@
+require('dotenv').config();
+
 /* eslint-disable indent */
 import { Express, Request } from 'express';
-import config from 'config';
 import morgan from 'morgan';
 import json from 'morgan-json';
-import moment from 'moment-timezone';
 import fs from 'fs';
 import path from 'path';
 import { Writable } from 'stream';
 import uuid from 'node-uuid';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import sanitize from '../utils/sanitize.utils';
 
-const loggingLevel = config.get<string>('logging.level');
-const loggingTimezone = config.get<string>('logging.timezone');
+const loggingLevel = process.env.LOG_LEVEL || 'default';
 
 class DBStream extends Writable {
   async _write(chunk: Buffer, _: unknown, callback: () => void) {
@@ -18,7 +19,8 @@ class DBStream extends Writable {
       try {
         // Import Log dynamically to prevent Sequelize errors when database is not set up
         const Log = (await import('../models/log.model')).default;
-        await Log.create({ log: chunk.toString() });
+        const logData = JSON.parse(chunk.toString('utf-8'));
+        await Log.create({ log: logData });
         callback();
       } catch (error) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -44,27 +46,74 @@ class FileStream extends Writable {
   }
 }
 
+morgan.token('id', () => uuid.v4());
+
+morgan.token('user', (req: Request) => {
+  const authHeader =
+    (req.headers['authorization'] as string) ||
+    (req.headers['Authorization'] as string);
+
+  if (!authHeader) return 'Guest';
+
+  const token = authHeader.split(' ')[1];
+
+  try {
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!);
+    const user = decoded as JwtPayload;
+    return user.email || 'Unknown User';
+  } catch (error) {
+    return 'Invalid Token';
+  }
+});
+
+morgan.token('payload', (req: Request) => {
+  const sanitizedBody = sanitize(req.body, ['password']);
+  return JSON.stringify(sanitizedBody);
+});
+
+morgan.token('referer', (req: Request) => {
+  return req.get('Referer') || '-';
+});
+
+morgan.token('response-headers', (_req, res) => {
+  const sanitizedHeaders = sanitize(res.getHeaders(), [
+    'set-cookie',
+    'access-control-allow-origin'
+  ]);
+  return JSON.stringify(sanitizedHeaders);
+});
+
 const formatDatabase = json({
+  'user-email': ':user',
   'remote-addr': ':remote-addr',
-  'remote-user': ':remote-user',
-  'log-date-time': '[:date]',
   method: ':method',
   url: ':url',
   'http-version': ':http-version',
   status: ':status',
   'content-length': ':res[content-length]',
   'user-agent': ':user-agent',
-  'response-time': ':response-time ms'
+  'response-time': ':response-time ms',
+  payload: ':payload',
+  referer: ':referer',
+  'response-headers': ':response-headers'
 });
 
 const formatFile =
-  ':id\tREMOTE_ADDRESS/:remote-addr\tREMOTE_USER/:remote-user\t[:date]\tMETHOD/:method\t:url\tSTATUS_CODE/:status\tCONTENT_LENGTH/:res[content-length]\tREFERANCE/:referrer\tUSER_AGENT/:user-agent\tHTTP/:http-version';
+  ':id\t' +
+  'REMOTE_ADDRESS/:remote-addr\t' +
+  'REMOTE_USER/:remote-user\t' +
+  'USER_EMAIL/:user\t' +
+  'METHOD/:method\t' +
+  ':url\t' +
+  'STATUS_CODE/:status\t' +
+  'CONTENT_LENGTH/:res[content-length]\t' +
+  'REFERANCE/:referrer\t' +
+  'USER_AGENT/:user-agent\t' +
+  'HTTP/:http-version\t' +
+  'PAYLOAD/:payload';
++'RESPONSE_HEADERS/:response-headers';
 
-morgan.token('id', () => uuid.v4());
-
-morgan.token('date', () => {
-  return moment().tz(loggingTimezone).format('YYYY-MM-DD HH:mm:ss');
-});
+const skipEndpoints = [/^\/log\//, /^\/docs\//];
 
 const logger = (app: Express) => {
   const logger_mode = loggingLevel;
@@ -76,10 +125,7 @@ const logger = (app: Express) => {
         morgan(formatFile, {
           stream: new FileStream(),
           skip: (req: Request) => {
-            const skipEndpoints = ['/logs', '/docs'];
-            return skipEndpoints.some((endpoint) =>
-              req.originalUrl.includes(endpoint)
-            );
+            return skipEndpoints.some((regex) => regex.test(req.originalUrl));
           }
         })
       );
@@ -89,10 +135,7 @@ const logger = (app: Express) => {
         morgan(formatDatabase, {
           stream: new DBStream(),
           skip: (req: Request) => {
-            const skipEndpoints = ['/logs', '/docs'];
-            return skipEndpoints.some((endpoint) =>
-              req.originalUrl.includes(endpoint)
-            );
+            return skipEndpoints.some((regex) => regex.test(req.originalUrl));
           }
         })
       );

@@ -112,7 +112,7 @@ class User extends Model<UserAttributes> {
   }
 }
 
-User.initialize(sequelize);
+sequelize && User.initialize(sequelize);
 User.applyScopes();
 
 export default User;

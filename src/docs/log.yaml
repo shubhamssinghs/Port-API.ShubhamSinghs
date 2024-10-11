@@ -3,7 +3,7 @@ tags:
     description: APIs related to logs
 
 paths:
-  /api/log/all:
+  /log/all:
     get:
       summary: Get all logs
       tags: [Logs]
