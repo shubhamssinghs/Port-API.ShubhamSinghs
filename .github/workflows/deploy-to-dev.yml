@@ -58,7 +58,7 @@ jobs:
 
       - name: Build Docker image for Development
         run: |
-          docker build -f ./Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/${{ vars.NODE_DEV_DOCKER_IMAGE_NAME }}:latest .
+          docker build -f ./Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/${{ vars.NODE_DEV_DOCKER_IMAGE_NAME }} .
 
       - name: Log in to DockerHub
         uses: docker/login-action@v2
@@ -68,8 +68,8 @@ jobs:
 
       - name: Push Docker image
         run: |
-          docker tag ${{ secrets.DOCKER_USERNAME }}/${{ vars.NODE_DEV_DOCKER_IMAGE_NAME }}:latest ${{ secrets.DOCKER_USERNAME }}/${{ vars.NODE_DEV_DOCKER_IMAGE_NAME }}:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/${{ vars.NODE_DEV_DOCKER_IMAGE_NAME }}:latest
+          docker tag ${{ secrets.DOCKER_USERNAME }}/${{ vars.NODE_DEV_DOCKER_IMAGE_NAME }} ${{ secrets.DOCKER_USERNAME }}/${{ vars.NODE_DEV_DOCKER_IMAGE_NAME }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ vars.NODE_DEV_DOCKER_IMAGE_NAME }}
 
       - name: Deploy to staging server
         uses: appleboy/ssh-action@v1.0.3
