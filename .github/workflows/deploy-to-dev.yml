@@ -49,6 +49,10 @@ jobs:
           echo "EXPOSE ${{ vars.SERVER_PORT }}" >> Dockerfile
           echo 'CMD ["npm", "start"]' >> Dockerfile
 
+      - name: Copy .env file to project root
+        run: |
+          mv .env ./
+
       - name: Build Docker image for Development
         run: |
           docker build -f ./Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }} .
