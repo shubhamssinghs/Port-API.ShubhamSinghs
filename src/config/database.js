@@ -11,6 +11,4 @@ const dbConfig = {
   migrationStorageTableName: 'migrations'
 };
 
-console.log(dbConfig, 'consoling');
-
 module.exports = dbConfig;

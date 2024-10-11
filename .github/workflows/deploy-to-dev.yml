@@ -79,6 +79,7 @@ jobs:
             echo "services:" >> docker-compose.yml
             echo "  app:" >> docker-compose.yml
             echo "    image: ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}" >> docker-compose.yml
+            echo "    container_name: ${{ vars.DOCKER_IMAGE_NAME }}" >> docker-compose.yml
             echo "    ports:" >> docker-compose.yml
             echo "      - \"${{ vars.SERVER_PORT }}:${{ vars.SERVER_PORT }}\"" >> docker-compose.yml
             echo "    env_file: .env" >> docker-compose.yml
