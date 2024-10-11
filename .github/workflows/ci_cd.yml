@@ -1,4 +1,4 @@
-name: Deploy to Dev
+name: CI & CD
 
 env:
   NODE_VERSION: '21'
