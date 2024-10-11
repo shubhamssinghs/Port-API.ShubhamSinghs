@@ -44,7 +44,7 @@ export const verifyToken = (
       .json({ error: errorMessages.TokenNotProvided });
   }
 
-  const accessTokenSecret = process.env.ACCESS_TOKEN_SECRETS;
+  const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 
   if (!accessTokenSecret) {
     return res

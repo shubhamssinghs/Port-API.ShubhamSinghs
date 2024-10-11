@@ -58,7 +58,7 @@ morgan.token('user', (req: Request) => {
   const token = authHeader.split(' ')[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRETS!);
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!);
     const user = decoded as JwtPayload;
     return user.email || 'Unknown User';
   } catch (error) {

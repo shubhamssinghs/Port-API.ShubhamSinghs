@@ -102,12 +102,12 @@ class AuthController {
 
       const accessToken = this.generateToken(
         user.email,
-        process.env.ACCESS_TOKEN_SECRETS!,
+        process.env.ACCESS_TOKEN_SECRET!,
         process.env.ACCESS_TOKEN_EXPIRY!
       );
       const refreshToken = this.generateToken(
         user.email,
-        process.env.REFRESH_TOKEN_SECRETS!,
+        process.env.REFRESH_TOKEN_SECRET!,
         process.env.REFRESH_TOKEN_EXPIRY!
       );
 
@@ -165,11 +165,11 @@ class AuthController {
     try {
       const { email } = jwt.verify(
         cookies['auth-m-rt'],
-        process.env.REFRESH_TOKEN_SECRETS!
+        process.env.REFRESH_TOKEN_SECRET!
       ) as { email: string };
       const accessToken = this.generateToken(
         email,
-        process.env.ACCESS_TOKEN_SECRETS!,
+        process.env.ACCESS_TOKEN_SECRET!,
         process.env.ACCESS_TOKEN_EXPIRY!
       );
 
@@ -211,8 +211,8 @@ class AuthController {
 
       const token = this.generateToken(
         email,
-        process.env.EMAIL_VERIFICATION_SECRETS!,
-        process.env.EMAIL_VERIFIACTION_TOKEN_EXPIRY!
+        process.env.EMAIL_VERIFICATION_SECRET!,
+        process.env.EMAIL_VERIFICATION_TOKEN_EXPIRY!
       );
       user.verification_token = token;
       user.verification_token_expires = new Date(Date.now() + 10 * 60 * 1000);
@@ -246,7 +246,7 @@ class AuthController {
         .json({ error: errorMessages.TokenNotFound });
 
     try {
-      const emailVerificationSecret = process.env.EMAIL_VERIFICATION_SECRETS!;
+      const emailVerificationSecret = process.env.EMAIL_VERIFICATION_SECRET!;
       const decoded = jwt.verify(token, emailVerificationSecret) as {
         email: string;
       };
