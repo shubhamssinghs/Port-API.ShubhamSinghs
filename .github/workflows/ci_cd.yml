@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: test_and_run_sonar_on_code
     environment: DEV
-    if: github.event.pull_request.merged == true
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -91,7 +91,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy_to_dev
     environment: PROD
-    if: github.event.pull_request.merged == true
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
