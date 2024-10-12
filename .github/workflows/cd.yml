@@ -54,6 +54,7 @@ jobs:
           port: ${{ secrets.DEPLOY_SERVER_PORT }}
           script: |
             cd ..
+            cd usr
             ls -al
             bash scripts/deploy.script.sh
             
