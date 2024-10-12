@@ -49,7 +49,7 @@ jobs:
           username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
           password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
           port: ${{ secrets.DEPLOY_SERVER_PORT }}
-          script: bash scripts/deploy.script.sh
+          script: cd ./scripts && bash deploy.script.sh
 
   deploy_to_prod:
     runs-on: ubuntu-latest
@@ -92,4 +92,4 @@ jobs:
           username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
           password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
           port: ${{ secrets.DEPLOY_SERVER_PORT }}
-          script: bash scripts/deploy.script.sh
+          script: cd ./scripts && bash deploy.script.sh
