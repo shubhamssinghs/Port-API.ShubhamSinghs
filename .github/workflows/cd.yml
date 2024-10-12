@@ -50,7 +50,7 @@ jobs:
           password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
           port: ${{ secrets.DEPLOY_SERVER_PORT }}
           script: |
-            ls -al scripts
+            ls -al
             bash scripts/deploy.script.sh
             
 
