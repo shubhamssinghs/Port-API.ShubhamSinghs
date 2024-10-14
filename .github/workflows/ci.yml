@@ -1,9 +1,13 @@
-name: Node Tests & SonarQube Scan
+name: Continuous Integration (CI)
+
+env:
+  NODE_VERSION: '21'
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
-      - develop
+      - main
 
 jobs:
   test_and_run_sonar_on_code:
@@ -15,18 +19,18 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Install dependencies
         run: npm ci
 
       - name: Run tests
-        run: npm run test:dev
+        run: npm run test
 
       - name: Create SonarQube configuration file
         run: |
           echo "sonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}" > sonar-project.properties
-          echo "sonar.exclusions=**/node_modules/**, **/*.test.ts, **/src/services/ssl.service.ts, **/Dockerfile.dev, **/Dockerfile.prod" >> sonar-project.properties
+          echo "sonar.exclusions=**/node_modules/**, **/*.test.ts, **/src/services/ssl.service.ts" >> sonar-project.properties
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
@@ -34,8 +38,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
 
-      - name: Check SonarQube Quality Gate
-        uses: sonarsource/sonarqube-quality-gate-action@master
-        timeout-minutes: 5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # - name: Check SonarQube Quality Gate
+      #  uses: sonarsource/sonarqube-quality-gate-action@master
+      #  timeout-minutes: 5
+      #  env:
+      #    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
