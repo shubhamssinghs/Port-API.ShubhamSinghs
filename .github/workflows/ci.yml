@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
   pull_request:
     branches:
-      - main
+      - develop
 
 jobs:
   test_and_run_sonar_on_code:
