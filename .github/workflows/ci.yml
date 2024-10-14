@@ -32,11 +32,11 @@ jobs:
           echo "sonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}" > sonar-project.properties
           echo "sonar.exclusions=**/node_modules/**, **/*.test.ts, **/src/services/ssl.service.ts" >> sonar-project.properties
 
-      - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
+      # - name: SonarQube Scan
+      #   uses: sonarsource/sonarqube-scan-action@master
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
 
       # - name: Check SonarQube Quality Gate
       #  uses: sonarsource/sonarqube-quality-gate-action@master

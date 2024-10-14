@@ -55,7 +55,7 @@ jobs:
           script: |
             sudo apt-get update
             sudo apt-get install -y docker-compose
-            
+
             echo "ENV=${{ vars.ENV }}" >> .env
             echo "APP_URL=${{ vars.APP_URL }}" >> .env
             echo "APP_NAME=${{ vars.APP_NAME }}" >> .env
@@ -81,7 +81,7 @@ jobs:
             echo "CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}" >> .env
             echo "LOG_LEVEL=database" >> .env
             echo "LOG_TIME_ZONE=Asia/Kolkata" >> .env
-            
+
             echo "version: '3.8'" > docker-compose.yml
             echo "services:" >> docker-compose.yml
             echo "  app:" >> docker-compose.yml
@@ -91,16 +91,15 @@ jobs:
             echo "      - \"${{ vars.SERVER_PORT }}:${{ vars.SERVER_PORT }}\"" >> docker-compose.yml
             echo "    env_file: .env" >> docker-compose.yml
             echo "    restart: unless-stopped" >> docker-compose.yml
-            
+
             docker-compose -f docker-compose.yml pull
             docker-compose -f docker-compose.yml down
             docker-compose -f docker-compose.yml up -d
-            
 
   deploy_to_prod:
     runs-on: ubuntu-latest
     needs: deploy_to_dev
-    environment: PROD
+    environment: DEV
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
@@ -113,7 +112,7 @@ jobs:
           echo "COPY package*.json ./" >> Dockerfile
           echo "RUN npm ci" >> Dockerfile
           echo "COPY . ." >> Dockerfile
-          echo "EXPOSE ${{ vars.SERVER_PORT }}" >> Dockerfile
+          echo "EXPOSE 2828" >> Dockerfile
           echo 'CMD ["npm", "start"]' >> Dockerfile
 
       - name: Build Docker image for Production
@@ -141,12 +140,12 @@ jobs:
           script: |
             sudo apt-get update
             sudo apt-get install -y docker-compose
-            
-            echo "ENV=${{ vars.ENV }}" >> .env
-            echo "APP_URL=${{ vars.APP_URL }}" >> .env
+
+            echo "ENV=production" >> .env
+            echo "APP_URL=https://api.shubhamsinghs.com" >> .env
             echo "APP_NAME=${{ vars.APP_NAME }}" >> .env
             echo "SERVER_HOST=${{ vars.SERVER_HOST }}" >> .env
-            echo "SERVER_PORT=${{ vars.SERVER_PORT }}" >> .env
+            echo "SERVER_PORT=2828" >> .env
             echo "ACCESS_TOKEN_SECRET=${{ vars.ACCESS_TOKEN_SECRET }}" >> .env
             echo "REFRESH_TOKEN_SECRET=${{ vars.REFRESH_TOKEN_SECRET }}" >> .env
             echo "EMAIL_VERIFICATION_SECRET=${{ vars.EMAIL_VERIFICATION_SECRET }}" >> .env
@@ -167,7 +166,7 @@ jobs:
             echo "CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}" >> .env
             echo "LOG_LEVEL=database" >> .env
             echo "LOG_TIME_ZONE=Asia/Kolkata" >> .env
-            
+
             echo "version: '3.8'" > docker-compose.yml
             echo "services:" >> docker-compose.yml
             echo "  app:" >> docker-compose.yml
@@ -177,7 +176,30 @@ jobs:
             echo "      - \"${{ vars.SERVER_PORT }}:${{ vars.SERVER_PORT }}\"" >> docker-compose.yml
             echo "    env_file: .env" >> docker-compose.yml
             echo "    restart: unless-stopped" >> docker-compose.yml
-            
+
             docker-compose -f docker-compose.yml pull
             docker-compose -f docker-compose.yml down
             docker-compose -f docker-compose.yml up -d
+
+      - name: Get Release Version from package.json
+        id: get_version
+        run: |
+          VERSION=$(jq -r .version package.json)
+          echo "RELEASE_VERSION=${VERSION}" >> $GITHUB_ENV
+
+      - name: Create Git tag
+        id: tag
+        run: |
+          git tag ${{ env.RELEASE_VERSION }}
+          git push origin ${{ env.RELEASE_VERSION }}
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.RELEASE_VERSION }}
+          release_name: Release ${{ env.RELEASE_VERSION }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
