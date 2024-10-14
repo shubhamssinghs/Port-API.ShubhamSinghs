@@ -56,45 +56,45 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y docker-compose
 
-            echo "ENV=${{ vars.ENV }}" >> .env
-            echo "APP_URL=${{ vars.APP_URL }}" >> .env
-            echo "APP_NAME=${{ vars.APP_NAME }}" >> .env
-            echo "SERVER_HOST=${{ vars.SERVER_HOST }}" >> .env
-            echo "SERVER_PORT=${{ vars.SERVER_PORT }}" >> .env
-            echo "ACCESS_TOKEN_SECRET=${{ vars.ACCESS_TOKEN_SECRET }}" >> .env
-            echo "REFRESH_TOKEN_SECRET=${{ vars.REFRESH_TOKEN_SECRET }}" >> .env
-            echo "EMAIL_VERIFICATION_SECRET=${{ vars.EMAIL_VERIFICATION_SECRET }}" >> .env
-            echo "ACCESS_TOKEN_EXPIRY=${{ vars.ACCESS_TOKEN_EXPIRY }}" >> .env
-            echo "REFRESH_TOKEN_EXPIRY=${{ vars.REFRESH_TOKEN_EXPIRY }}" >> .env
-            echo "EMAIL_VERIFICATION_TOKEN_EXPIRY=${{ vars.EMAIL_VERIFICATION_TOKEN_EXPIRY }}" >> .env
-            echo "SMTP_USERNAME=${{ vars.SMTP_USERNAME }}" >> .env 
-            echo "SMTP_PASSWORD=${{ vars.SMTP_PASSWORD }}" >> .env
-            echo "SMTP_HOST=${{ vars.SMTP_HOST }}" >> .env
-            echo "SMTP_PORT=${{ vars.SMTP_PORT }}" >> .env
-            echo "SMTP_SSL=${{ vars.SMTP_SSL }}" >> .env
-            echo "SMTP_SENDER_NAME=${{ vars.SMTP_SENDER_NAME }}" >> .env
-            echo "SMTP_FROM_MAIL=${{ vars.SMTP_FROM_MAIL }}" >> .env
-            echo "DB_HOST=${{ vars.DB_HOST }}" >> .env
-            echo "DB_USERNAME=${{ vars.DB_USERNAME }}" >> .env
-            echo "DB_PASSWORD=${{ vars.DB_PASSWORD }}" >> .env
-            echo "DB_DATABASE=${{ vars.DB_DATABASE }}" >> .env
-            echo "CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}" >> .env
-            echo "LOG_LEVEL=database" >> .env
-            echo "LOG_TIME_ZONE=Asia/Kolkata" >> .env
+            echo "ENV=${{ vars.ENV }}" >> .env.dev
+            echo "APP_URL=${{ vars.APP_URL }}" >> .env.dev
+            echo "APP_NAME=${{ vars.APP_NAME }}" >> .env.dev
+            echo "SERVER_HOST=${{ vars.SERVER_HOST }}" >> .env.dev
+            echo "SERVER_PORT=${{ vars.SERVER_PORT }}" >> .env.dev
+            echo "ACCESS_TOKEN_SECRET=${{ vars.ACCESS_TOKEN_SECRET }}" >> .env.dev
+            echo "REFRESH_TOKEN_SECRET=${{ vars.REFRESH_TOKEN_SECRET }}" >> .env.dev
+            echo "EMAIL_VERIFICATION_SECRET=${{ vars.EMAIL_VERIFICATION_SECRET }}" >> .env.dev
+            echo "ACCESS_TOKEN_EXPIRY=${{ vars.ACCESS_TOKEN_EXPIRY }}" >> .env.dev
+            echo "REFRESH_TOKEN_EXPIRY=${{ vars.REFRESH_TOKEN_EXPIRY }}" >> .env.dev
+            echo "EMAIL_VERIFICATION_TOKEN_EXPIRY=${{ vars.EMAIL_VERIFICATION_TOKEN_EXPIRY }}" >> .env.dev
+            echo "SMTP_USERNAME=${{ vars.SMTP_USERNAME }}" >> .env.dev
+            echo "SMTP_PASSWORD=${{ vars.SMTP_PASSWORD }}" >> .env.dev
+            echo "SMTP_HOST=${{ vars.SMTP_HOST }}" >> .env.dev
+            echo "SMTP_PORT=${{ vars.SMTP_PORT }}" >> .env.dev
+            echo "SMTP_SSL=${{ vars.SMTP_SSL }}" >> .env.dev
+            echo "SMTP_SENDER_NAME=${{ vars.SMTP_SENDER_NAME }}" >> .env.dev
+            echo "SMTP_FROM_MAIL=${{ vars.SMTP_FROM_MAIL }}" >> .env.dev
+            echo "DB_HOST=${{ vars.DB_HOST }}" >> .env.dev
+            echo "DB_USERNAME=${{ vars.DB_USERNAME }}" >> .env.dev
+            echo "DB_PASSWORD=${{ vars.DB_PASSWORD }}" >> .env.dev
+            echo "DB_DATABASE=${{ vars.DB_DATABASE }}" >> .env.dev
+            echo "CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}" >> .env.dev
+            echo "LOG_LEVEL=database" >> .env.dev
+            echo "LOG_TIME_ZONE=Asia/Kolkata" >> .env.dev
 
-            echo "version: '3.8'" > docker-compose.yml
-            echo "services:" >> docker-compose.yml
-            echo "  app:" >> docker-compose.yml
-            echo "    image: ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:dev" >> docker-compose.yml
-            echo "    container_name: ${{ vars.DOCKER_IMAGE_NAME }}-dev" >> docker-compose.yml
-            echo "    ports:" >> docker-compose.yml
-            echo "      - \"${{ vars.SERVER_PORT }}:${{ vars.SERVER_PORT }}\"" >> docker-compose.yml
-            echo "    env_file: .env" >> docker-compose.yml
-            echo "    restart: unless-stopped" >> docker-compose.yml
+            echo "version: '3.8'" > docker-compose.dev.yml
+            echo "services:" >> docker-compose.dev.yml
+            echo "  app:" >> docker-compose.dev.yml
+            echo "    image: ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:dev" >> docker-compose.dev.yml
+            echo "    container_name: ${{ vars.DOCKER_IMAGE_NAME }}-dev" >> docker-compose.dev.yml
+            echo "    ports:" >> docker-compose.dev.yml
+            echo "      - \"${{ vars.SERVER_PORT }}:${{ vars.SERVER_PORT }}\"" >> docker-compose.dev.yml
+            echo "    env_file: .env.dev" >> docker-compose.dev.yml
+            echo "    restart: unless-stopped" >> docker-compose.dev.yml
 
-            docker-compose -f docker-compose.yml pull
-            docker-compose -f docker-compose.yml down
-            docker-compose -f docker-compose.yml up -d
+            docker-compose -f docker-compose.dev.yml pull
+            docker-compose -f docker-compose.dev.yml down
+            docker-compose -f docker-compose.dev.yml up -d
 
   deploy_to_prod:
     runs-on: ubuntu-latest
@@ -141,42 +141,42 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y docker-compose
 
-            echo "ENV=${{ vars.ENV }}" >> .env
-            echo "APP_URL=${{ vars.APP_URL }}" >> .env
-            echo "APP_NAME=${{ vars.APP_NAME }}" >> .env
-            echo "SERVER_HOST=${{ vars.SERVER_HOST }}" >> .env
-            echo "SERVER_PORT=${{ vars.SERVER_PORT }}" >> .env
-            echo "ACCESS_TOKEN_SECRET=${{ vars.ACCESS_TOKEN_SECRET }}" >> .env
-            echo "REFRESH_TOKEN_SECRET=${{ vars.REFRESH_TOKEN_SECRET }}" >> .env
-            echo "EMAIL_VERIFICATION_SECRET=${{ vars.EMAIL_VERIFICATION_SECRET }}" >> .env
-            echo "ACCESS_TOKEN_EXPIRY=${{ vars.ACCESS_TOKEN_EXPIRY }}" >> .env
-            echo "REFRESH_TOKEN_EXPIRY=${{ vars.REFRESH_TOKEN_EXPIRY }}" >> .env
-            echo "EMAIL_VERIFICATION_TOKEN_EXPIRY=${{ vars.EMAIL_VERIFICATION_TOKEN_EXPIRY }}" >> .env
-            echo "SMTP_USERNAME=${{ vars.SMTP_USERNAME }}" >> .env 
-            echo "SMTP_PASSWORD=${{ vars.SMTP_PASSWORD }}" >> .env
-            echo "SMTP_HOST=${{ vars.SMTP_HOST }}" >> .env
-            echo "SMTP_PORT=${{ vars.SMTP_PORT }}" >> .env
-            echo "SMTP_SSL=${{ vars.SMTP_SSL }}" >> .env
-            echo "SMTP_SENDER_NAME=${{ vars.SMTP_SENDER_NAME }}" >> .env
-            echo "SMTP_FROM_MAIL=${{ vars.SMTP_FROM_MAIL }}" >> .env
-            echo "DB_HOST=${{ vars.DB_HOST }}" >> .env
-            echo "DB_USERNAME=${{ vars.DB_USERNAME }}" >> .env
-            echo "DB_PASSWORD=${{ vars.DB_PASSWORD }}" >> .env
-            echo "DB_DATABASE=${{ vars.DB_DATABASE }}" >> .env
-            echo "CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}" >> .env
-            echo "LOG_LEVEL=database" >> .env
-            echo "LOG_TIME_ZONE=Asia/Kolkata" >> .env
+            echo "ENV=${{ vars.ENV }}" >> .env.prod
+            echo "APP_URL=${{ vars.APP_URL }}" >> .env.prod
+            echo "APP_NAME=${{ vars.APP_NAME }}" >> .env.prod
+            echo "SERVER_HOST=${{ vars.SERVER_HOST }}" >> .env.prod
+            echo "SERVER_PORT=${{ vars.SERVER_PORT }}" >> .env.prod
+            echo "ACCESS_TOKEN_SECRET=${{ vars.ACCESS_TOKEN_SECRET }}" >> .env.prod
+            echo "REFRESH_TOKEN_SECRET=${{ vars.REFRESH_TOKEN_SECRET }}" >> .env.prod
+            echo "EMAIL_VERIFICATION_SECRET=${{ vars.EMAIL_VERIFICATION_SECRET }}" >> .env.prod
+            echo "ACCESS_TOKEN_EXPIRY=${{ vars.ACCESS_TOKEN_EXPIRY }}" >> .env.prod
+            echo "REFRESH_TOKEN_EXPIRY=${{ vars.REFRESH_TOKEN_EXPIRY }}" >> .env.prod
+            echo "EMAIL_VERIFICATION_TOKEN_EXPIRY=${{ vars.EMAIL_VERIFICATION_TOKEN_EXPIRY }}" >> .env.prod
+            echo "SMTP_USERNAME=${{ vars.SMTP_USERNAME }}" >> .env.prod
+            echo "SMTP_PASSWORD=${{ vars.SMTP_PASSWORD }}" >> .env.prod
+            echo "SMTP_HOST=${{ vars.SMTP_HOST }}" >> .env.prod
+            echo "SMTP_PORT=${{ vars.SMTP_PORT }}" >> .env.prod
+            echo "SMTP_SSL=${{ vars.SMTP_SSL }}" >> .env.prod
+            echo "SMTP_SENDER_NAME=${{ vars.SMTP_SENDER_NAME }}" >> .env.prod
+            echo "SMTP_FROM_MAIL=${{ vars.SMTP_FROM_MAIL }}" >> .env.prod
+            echo "DB_HOST=${{ vars.DB_HOST }}" >> .env.prod
+            echo "DB_USERNAME=${{ vars.DB_USERNAME }}" >> .env.prod
+            echo "DB_PASSWORD=${{ vars.DB_PASSWORD }}" >> .env.prod
+            echo "DB_DATABASE=${{ vars.DB_DATABASE }}" >> .env.prod
+            echo "CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}" >> .env.prod
+            echo "LOG_LEVEL=database" >> .env.prod
+            echo "LOG_TIME_ZONE=Asia/Kolkata" >> .env.prod
 
-            echo "version: '3.8'" > docker-compose.yml
-            echo "services:" >> docker-compose.yml
-            echo "  app:" >> docker-compose.yml
-            echo "    image: ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:prod" >> docker-compose.yml
-            echo "    container_name: ${{ vars.DOCKER_IMAGE_NAME }}-prod" >> docker-compose.yml
-            echo "    ports:" >> docker-compose.yml
-            echo "      - \"${{ vars.SERVER_PORT }}:${{ vars.SERVER_PORT }}\"" >> docker-compose.yml
-            echo "    env_file: .env" >> docker-compose.yml
-            echo "    restart: unless-stopped" >> docker-compose.yml
+            echo "version: '3.8'" > docker-compose.prod.yml
+            echo "services:" >> docker-compose.prod.yml
+            echo "  app:" >> docker-compose.prod.yml
+            echo "    image: ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:prod" >> docker-compose.prod.yml
+            echo "    container_name: ${{ vars.DOCKER_IMAGE_NAME }}-prod" >> docker-compose.prod.yml
+            echo "    ports:" >> docker-compose.prod.yml
+            echo "      - \"${{ vars.SERVER_PORT }}:${{ vars.SERVER_PORT }}\"" >> docker-compose.prod.yml
+            echo "    env_file: .env.prod" >> docker-compose.prod.yml
+            echo "    restart: unless-stopped" >> docker-compose.prod.yml
 
-            docker-compose -f docker-compose.yml pull
-            docker-compose -f docker-compose.yml down
-            docker-compose -f docker-compose.yml up -d
+            docker-compose -f docker-compose.prod.yml pull
+            docker-compose -f docker-compose.prod.yml down
+            docker-compose -f docker-compose.prod.yml up -d
