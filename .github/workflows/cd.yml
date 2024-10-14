@@ -23,7 +23,7 @@ jobs:
       - name: Create Dockerfile
         run: |
           echo "FROM node:${{ vars.DOCKER_NODE_VERSION }}" >> Dockerfile
-          echo "WORKDIR /usr/src/app" >> Dockerfile
+          echo "WORKDIR /usr/src/app-dev" >> Dockerfile
           echo "COPY package*.json ./" >> Dockerfile
           echo "RUN npm ci" >> Dockerfile
           echo "COPY . ." >> Dockerfile
@@ -44,6 +44,10 @@ jobs:
         run: |
           docker tag ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:dev ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:dev
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:dev
+
+      - name: Delete Dockerfile
+        run: |
+          rm Dockerfile
 
       - name: Deploy to Development Server
         uses: appleboy/ssh-action@v1.0.3
@@ -96,6 +100,10 @@ jobs:
             docker-compose -f docker-compose.dev.yml down
             docker-compose -f docker-compose.dev.yml up -d
 
+            cd /usr/src/app-dev
+            rm docker-compose.dev.yml
+            rm .env.dev
+
   deploy_to_prod:
     runs-on: ubuntu-latest
     needs: deploy_to_dev
@@ -108,7 +116,7 @@ jobs:
       - name: Create Dockerfile
         run: |
           echo "FROM node:${{ vars.DOCKER_NODE_VERSION }}" >> Dockerfile
-          echo "WORKDIR /usr/src/app" >> Dockerfile
+          echo "WORKDIR /usr/src/app-prod" >> Dockerfile
           echo "COPY package*.json ./" >> Dockerfile
           echo "RUN npm ci" >> Dockerfile
           echo "COPY . ." >> Dockerfile
@@ -180,3 +188,8 @@ jobs:
             docker-compose -f docker-compose.prod.yml pull
             docker-compose -f docker-compose.prod.yml down
             docker-compose -f docker-compose.prod.yml up -d
+
+            cd /usr/src/app-prod
+            rm docker-compose.prod.yml
+            rm .env.prod
+            
