@@ -1,8 +1,5 @@
 name: Continuous Deployment Dev (CD)
 
-env:
-  NODE_VERSION: '21'
-
 on:
   workflow_dispatch:
   push:
