@@ -1,6 +1,6 @@
 {
   "name": "Port-API.ShubhamSinghs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "src/server.ts",
   "scripts": {
