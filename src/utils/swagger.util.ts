@@ -8,7 +8,7 @@ const options: OAS3Options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Port-API.ShubhamSinghs API Documentation',
+      title: 'Port-API.ShubhamSinghs',
       version,
       description:
         'API documentation for Port-API.ShubhamSinghs </br> Click the link to download the JSON file: <a href="/swagger/Port-API.ShubhamSinghs.json">Download Port-API.ShubhamSinghs JSON</a>'
