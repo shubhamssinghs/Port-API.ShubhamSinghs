@@ -200,7 +200,7 @@ jobs:
           git tag $RELEASE_VERSION
           git push origin $RELEASE_VERSION
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
 
       - name: Create GitHub Release
         id: create_release
