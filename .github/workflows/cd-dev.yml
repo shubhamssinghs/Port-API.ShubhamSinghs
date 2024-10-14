@@ -1,0 +1,17 @@
+name: Continuous Deployment Dev (CD)
+
+env:
+  NODE_VERSION: '21'
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy_to_dev:
+    needs: test_and_run_sonar_on_code
+    uses: ./.github/workflows/docker-deploy.yml
+    with:
+      environment: DEV

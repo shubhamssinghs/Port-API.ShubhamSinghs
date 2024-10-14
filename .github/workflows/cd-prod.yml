@@ -1,0 +1,15 @@
+name: Continuous Deployment Prod (CD)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy_to_prod:
+    needs: test_and_run_sonar_on_code
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/docker-deploy.yml
+    with:
+      environment: PROD
