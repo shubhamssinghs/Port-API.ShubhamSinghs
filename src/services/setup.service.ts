@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-import express, { Express, Router } from 'express';
+import express, { Express, Request, Response, Router } from 'express';
 import helmet from 'helmet';
 import http from 'http';
 
@@ -13,6 +13,7 @@ export default class SetUpApplicationService {
   private _port: number | undefined;
   private _app: Express;
   private _routes: Router;
+  private _router: Router;
   private _initSwagger: boolean;
 
   constructor(routes: Router) {
@@ -23,6 +24,7 @@ export default class SetUpApplicationService {
 
     this._app = express();
     this._routes = routes;
+    this._router = Router();
 
     if (!this._env || !this._host || isNaN(this._port) || this._port <= 0) {
       throw new Error(
@@ -45,6 +47,12 @@ export default class SetUpApplicationService {
     }
 
     this._app.use(this._routes);
+
+    if (this._initSwagger) {
+      this._router.get('/', (_req: Request, res: Response) => {
+        res.redirect('/api-docs');
+      });
+    }
   }
 
   startApplication() {
