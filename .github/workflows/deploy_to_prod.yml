@@ -1,0 +1,79 @@
+name: Deploy to Prod
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  deploy_to_prod:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create environment file
+        run: |
+          echo "NODE_ENV=production" >> .env
+          echo "SERVER_HOST=0.0.0.0" >> .env
+          echo "SERVER_PORT=2128" >> .env
+
+          echo "ACCESS_TOKEN_SECRET=abcd" >> .env
+          echo "REFRESH_TOKEN_SECRET=qwer" >> .env
+          echo "EMAIL_VERIFICATION_SECRET=yuiop" >> .env
+
+          echo "ACCESS_TOKEN_EXPIRY=1800000" >> .env
+          echo "REFRESH_TOKEN_EXPIRY=86400000" >> .env
+
+          echo "SMTP_USERNAME=" >> .env 
+          echo "SMTP_PASSWORD=" >> .env
+          echo "SMTP_HOST=" >> .env
+          echo "SMTP_PORT=" >> .env
+          echo "SMTP_SSL=" >> .env
+          echo "SMTP_SENDER_NAME=" >> .env
+          echo "SMTP_FROM_MAIL=" >> .env
+
+          echo "CORS_ALLOWED_ORIGINS=https://port-dev-api.shubhamsinghs.com" >> .env
+          echo "LOG_LEVEL=database" >> .env
+          echo "LOG_TIME_ZONE=Asia/Kolkata" >> .env
+
+      - name: Create Docker file
+        run: |
+          echo "FROM node:20" >> Dockerfile
+          echo "WORKDIR /usr/src/app" >> Dockerfile
+          echo "COPY package*.json ./" >> Dockerfile
+          echo "RUN npm ci" >> Dockerfile
+          echo "COPY . ." >> Dockerfile
+          echo "EXPOSE 2828" >> Dockerfile
+          echo 'CMD ["npm", "start"]' >> Dockerfile
+
+      - name: Build Docker image for Production
+        run: |
+          docker build -f ./Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamssingh-prod:latest .
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push Docker image
+        run: |
+          docker tag ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamssingh-prod:latest ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamssingh-prod:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamssingh-prod:latest
+
+      - name: Deploy to staging server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_SERVER_HOST }}
+          username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
+          password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
+          port: ${{ secrets.DEPLOY_SERVER_PORT }}
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamssingh-prod
+            docker stop port-api-shubhamssingh-prod || true
+            docker rm port-api-shubhamssingh-prod || true
+            docker run -d --name port-api-shubhamssingh-prod -p 2828:2828 ${{ secrets.DOCKER_USERNAME }}/port-api-shubhamssingh-prod
