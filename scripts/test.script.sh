@@ -19,10 +19,5 @@ error_exit() {
 
 
 # Testing the application now
-<<<<<<< HEAD
-echo "🏗️  Testing the application now..."
-cross-env jest --config jest.config.ts
-=======
 #echo "🏗️  Testing the application now..."
 #cross-env jest --config jest.config.ts
->>>>>>> main
