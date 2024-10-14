@@ -57,9 +57,6 @@ jobs:
           password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
           port: ${{ secrets.DEPLOY_SERVER_PORT }}
           script: |
-            sudo apt-get update
-            sudo apt-get install -y docker-compose
-
             echo "ENV=${{ vars.ENV }}" >> .env.dev
             echo "APP_URL=${{ vars.APP_URL }}" >> .env.dev
             echo "APP_NAME=${{ vars.APP_NAME }}" >> .env.dev
@@ -86,23 +83,13 @@ jobs:
             echo "LOG_LEVEL=database" >> .env.dev
             echo "LOG_TIME_ZONE=Asia/Kolkata" >> .env.dev
 
-            echo "version: '3.8'" > docker-compose.dev.yml
-            echo "services:" >> docker-compose.dev.yml
-            echo "  app:" >> docker-compose.dev.yml
-            echo "    image: ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:dev" >> docker-compose.dev.yml
-            echo "    container_name: ${{ vars.DOCKER_IMAGE_NAME }}-dev" >> docker-compose.dev.yml
-            echo "    ports:" >> docker-compose.dev.yml
-            echo "      - \"${{ vars.SERVER_PORT }}:${{ vars.SERVER_PORT }}\"" >> docker-compose.dev.yml
-            echo "    env_file: .env.dev" >> docker-compose.dev.yml
-            echo "    restart: unless-stopped" >> docker-compose.dev.yml
-
-            docker-compose -f docker-compose.dev.yml pull
-            docker-compose -f docker-compose.dev.yml down
-            docker-compose -f docker-compose.dev.yml up -d
-
-            cd /usr/src/app-dev
-            rm docker-compose.dev.yml
-            rm .env.dev
+            docker run -d \
+              --name ${{ vars.DOCKER_IMAGE_NAME }}-dev \
+              -p ${{ vars.SERVER_PORT }}:${{ vars.SERVER_PORT }} \
+              --env-file .env.dev \
+              --restart unless-stopped \
+              ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:dev
+            
 
   deploy_to_prod:
     runs-on: ubuntu-latest
@@ -138,6 +125,10 @@ jobs:
           docker tag ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:prod ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:prod
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:prod
 
+      - name: Delete Dockerfile
+        run: |
+          rm Dockerfile
+
       - name: Deploy to Production Server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -146,9 +137,6 @@ jobs:
           password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
           port: ${{ secrets.DEPLOY_SERVER_PORT }}
           script: |
-            sudo apt-get update
-            sudo apt-get install -y docker-compose
-
             echo "ENV=${{ vars.ENV }}" >> .env.prod
             echo "APP_URL=${{ vars.APP_URL }}" >> .env.prod
             echo "APP_NAME=${{ vars.APP_NAME }}" >> .env.prod
@@ -175,21 +163,10 @@ jobs:
             echo "LOG_LEVEL=database" >> .env.prod
             echo "LOG_TIME_ZONE=Asia/Kolkata" >> .env.prod
 
-            echo "version: '3.8'" > docker-compose.prod.yml
-            echo "services:" >> docker-compose.prod.yml
-            echo "  app:" >> docker-compose.prod.yml
-            echo "    image: ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:prod" >> docker-compose.prod.yml
-            echo "    container_name: ${{ vars.DOCKER_IMAGE_NAME }}-prod" >> docker-compose.prod.yml
-            echo "    ports:" >> docker-compose.prod.yml
-            echo "      - \"${{ vars.SERVER_PORT }}:${{ vars.SERVER_PORT }}\"" >> docker-compose.prod.yml
-            echo "    env_file: .env.prod" >> docker-compose.prod.yml
-            echo "    restart: unless-stopped" >> docker-compose.prod.yml
-
-            docker-compose -f docker-compose.prod.yml pull
-            docker-compose -f docker-compose.prod.yml down
-            docker-compose -f docker-compose.prod.yml up -d
-
-            cd /usr/src/app-prod
-            rm docker-compose.prod.yml
-            rm .env.prod
+            docker run -d \
+              --name ${{ vars.DOCKER_IMAGE_NAME }}-prod \
+              -p ${{ vars.SERVER_PORT }}:${{ vars.SERVER_PORT }} \
+              --env-file .env.prod \
+              --restart unless-stopped \
+              ${{ secrets.DOCKER_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:prod
             
