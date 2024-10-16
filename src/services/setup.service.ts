@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-import express, { Express, Request, Response, Router } from 'express';
+import express, { Express, Router } from 'express';
 import helmet from 'helmet';
 import http from 'http';
 
@@ -12,7 +12,6 @@ export default class SetUpApplicationService {
   private _host: string | undefined;
   private _port: number | undefined;
   private _app: Express;
-  private _router: Router;
   private _routes: Router;
   private _initSwagger: boolean;
 
@@ -23,7 +22,6 @@ export default class SetUpApplicationService {
     this._initSwagger = this._env === 'development' || this._env === 'local';
 
     this._app = express();
-    this._router = Router();
     this._routes = routes;
 
     if (!this._env || !this._host || isNaN(this._port) || this._port <= 0) {
@@ -46,10 +44,6 @@ export default class SetUpApplicationService {
 
     if (this._initSwagger) {
       setupSwagger(this._app);
-      this._router.get('/', (_req: Request, res: Response) => {
-        console.log('Redirecting to /api-docs');
-        res.redirect('/api-docs');
-      });
     }
   }
 

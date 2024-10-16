@@ -18,9 +18,9 @@ class UserController {
       .json({ error: errorMessages.InternalServerError });
   }
 
-  public async getAllUsers(_req: Request, res: Response) {
+  async getAllUsers(_req: Request, res: Response) {
     try {
-      const users = await User.findAll();
+      const users = await User.scope('withPermissions').findAll();
       res.status(httpStatus.OK).json({ users });
     } catch (error) {
       this.handleErrors(
@@ -31,7 +31,7 @@ class UserController {
     }
   }
 
-  public async getUserByUuid(req: Request, res: Response) {
+  async getUserByUuid(req: Request, res: Response) {
     const { uuid } = req.params;
     if (!uuid)
       return res
@@ -54,7 +54,7 @@ class UserController {
     }
   }
 
-  public async updateUser(req: Request, res: Response) {
+  async updateUser(req: Request, res: Response) {
     const { uuid } = req.params;
 
     if (!uuid)
@@ -93,7 +93,7 @@ class UserController {
     }
   }
 
-  public async deleteUser(req: Request, res: Response) {
+  async deleteUser(req: Request, res: Response) {
     const { uuid } = req.params;
     if (!uuid)
       return res

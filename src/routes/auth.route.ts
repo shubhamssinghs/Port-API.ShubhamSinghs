@@ -3,7 +3,7 @@ require('dotenv').config();
 import { Router } from 'express';
 
 import { authController } from '../controllers';
-import { auth as authMiddleware } from '../middlewares';
+import { auth as authMiddleware, permission } from '../middlewares';
 import {
   registerValidator,
   loginValidator,
@@ -19,7 +19,12 @@ if (isProduction) {
   router.use(authMiddleware.authRateLimiter);
 }
 
-router.post('/register', registerValidator, authController.register);
+router.post(
+  '/register',
+  registerValidator,
+  permission.addDefaultUserPermission,
+  authController.register
+);
 router.post('/login', loginValidator, authController.login);
 router.post('/logout', authController.logout);
 router.post('/refresh-token', authController.refreshToken);

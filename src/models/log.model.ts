@@ -10,9 +10,6 @@ class Log extends Model<LogAttributes> {
   public uuid!: string;
   public log!: unknown;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
-
   public static initialize(sequelize: Sequelize): void {
     this.init(
       {
@@ -53,7 +50,7 @@ class Log extends Model<LogAttributes> {
 
   public static applyScopes(): void {
     this.addScope('defaultScope', {
-      order: [['createdAt', 'DESC']]
+      order: [['created_at', 'DESC']]
     });
   }
 }

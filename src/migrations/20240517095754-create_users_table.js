@@ -31,6 +31,11 @@ module.exports = {
         allowNull: false,
         defaultValue: true
       },
+      type: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: 'user'
+      },
       verification_token: {
         type: Sequelize.STRING,
         allowNull: true

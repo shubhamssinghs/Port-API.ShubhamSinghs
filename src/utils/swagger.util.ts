@@ -1,6 +1,6 @@
 import swaggerJSDoc, { OAS3Options } from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import { Express } from 'express';
+import { Express, Request, Response } from 'express';
 
 import { version } from '../../package.json';
 
@@ -37,6 +37,11 @@ const setupSwagger = (app: Express) => {
       'attachment; filename="Port-API.ShubhamSinghs.json"'
     );
     res.send(swaggerSpec);
+  });
+
+  app.get('/', (_req: Request, res: Response) => {
+    console.log('Redirecting to /api-docs');
+    res.redirect('/api-docs');
   });
 };
 

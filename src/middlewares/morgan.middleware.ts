@@ -113,7 +113,7 @@ const formatFile =
   'PAYLOAD/:payload';
 +'RESPONSE_HEADERS/:response-headers';
 
-const skipEndpoints = [/^\/log\//, /^\/docs\//];
+const skipEndpoints = [/^\/log\//, /^\/api-docs\//, /^\/swagger\//];
 
 const logger = (app: Express) => {
   const logger_mode = loggingLevel;

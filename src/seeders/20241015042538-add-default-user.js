@@ -6,23 +6,18 @@ const bcrypt = require('bcrypt');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface) {
-    if (process.env.NODE_ENV === 'production') {
-      console.log('Skipping seeding default user in production environment');
-      return;
-    }
-
     const hashedPassword = await bcrypt.hash('Test@123', 10);
-
     await queryInterface.bulkInsert(
       'users',
       [
         {
           uuid: uuidv4(),
-          name: 'Test User',
-          email: 'test@test.com',
+          name: 'Admin',
+          email: 'admin@admin.com',
           password: hashedPassword,
-          img: 'https://ui-avatars.com/api/?name=Test%20User&background=953699&color=ffffff&size=128',
+          img: 'https://ui-avatars.com/api/?name=Admin&background=953699&color=ffffff&size=128',
           active: true,
+          type: 'admin',
           verification_token: null,
           verification_token_expires: null,
           verified_at: new Date(),
@@ -35,6 +30,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    await queryInterface.bulkDelete('users', { email: 'test@test.com' }, {});
+    await queryInterface.bulkDelete('users', null, {});
   }
 };

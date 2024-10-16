@@ -8,7 +8,7 @@ class LogController {
     this.getAllLogs = this.getAllLogs.bind(this);
   }
 
-  public async getAllLogs(_req: Request, res: Response) {
+  async getAllLogs(_req: Request, res: Response) {
     try {
       const logs = await Log.findAll();
 

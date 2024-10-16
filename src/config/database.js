@@ -7,7 +7,9 @@ const dbConfig = {
   host: process.env.DB_HOST,
   dialect: 'mysql',
   migrationStorage: 'sequelize',
-  migrationStorageTableName: 'migrations'
+  migrationStorageTableName: 'migrations',
+  seederStorage: 'sequelize',
+  seederStorageTableName: 'seeders'
 };
 
 module.exports = dbConfig;

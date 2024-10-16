@@ -5,7 +5,7 @@ import { auth as authMiddleware } from '../middlewares';
 
 const router = Router();
 
-router.use(authMiddleware.verifyToken);
+// router.use(authMiddleware.verifyToken);
 
 router.get('/all', userController.getAllUsers);
 router.get('/:uuid', userController.getUserByUuid);

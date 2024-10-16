@@ -5,7 +5,7 @@ import { validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-import { User } from '../models';
+import { Permission, User } from '../models';
 import { httpStatus, errorMessages, successMessages } from '../constants';
 import { emailService } from '../services';
 
@@ -21,11 +21,11 @@ class AuthController {
   }
 
   private generateToken(
-    email: string,
+    data: { email: string; type?: string },
     secret: string,
     expiresIn: string | number
   ) {
-    return jwt.sign({ email }, secret, { expiresIn });
+    return jwt.sign(data, secret, { expiresIn });
   }
 
   private async handleErrors(res: Response, error: unknown, message: string) {
@@ -35,7 +35,7 @@ class AuthController {
       .json({ error: errorMessages.InternalServerError });
   }
 
-  public async register(req: Request, res: Response) {
+  async register(req: Request, res: Response) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res
@@ -44,6 +44,7 @@ class AuthController {
     }
 
     const { name, email, password } = req.body;
+    const { defaultPermission } = res.locals;
 
     try {
       const existingUser = await User.findOne({ where: { email } });
@@ -54,7 +55,18 @@ class AuthController {
       }
 
       const passwordHash = await bcrypt.hash(password, 10);
-      await User.create({ name, email, password: passwordHash });
+
+      await User.create(
+        {
+          name,
+          email,
+          password: passwordHash,
+          permissions: defaultPermission
+        },
+        {
+          include: [Permission]
+        }
+      );
 
       res.status(httpStatus.Created).json({
         message: successMessages.UserCreationSuccess
@@ -68,7 +80,7 @@ class AuthController {
     }
   }
 
-  public async login(req: Request, res: Response) {
+  async login(req: Request, res: Response) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res
@@ -100,13 +112,15 @@ class AuthController {
           .status(httpStatus.Forbidden)
           .json({ error: errorMessages.EmailVerificationRequired });
 
+      const dataToEncode = { email: user.email, type: user.type };
+
       const accessToken = this.generateToken(
-        user.email,
+        dataToEncode,
         process.env.ACCESS_TOKEN_SECRET!,
         process.env.ACCESS_TOKEN_EXPIRY!
       );
       const refreshToken = this.generateToken(
-        user.email,
+        dataToEncode,
         process.env.REFRESH_TOKEN_SECRET!,
         process.env.REFRESH_TOKEN_EXPIRY!
       );
@@ -133,7 +147,7 @@ class AuthController {
     }
   }
 
-  public async logout(req: Request, res: Response) {
+  async logout(req: Request, res: Response) {
     if (!req.cookies || Object.keys(req.cookies).length === 0) {
       return res
         .status(httpStatus.NoContent)
@@ -150,7 +164,7 @@ class AuthController {
       .json({ message: successMessages.LogoutSuccess });
   }
 
-  public async refreshToken(req: Request, res: Response) {
+  async refreshToken(req: Request, res: Response) {
     const cookies = req.cookies;
     if (
       !cookies ||
@@ -163,12 +177,12 @@ class AuthController {
     }
 
     try {
-      const { email } = jwt.verify(
+      const { email, type } = jwt.verify(
         cookies['auth-m-rt'],
         process.env.REFRESH_TOKEN_SECRET!
-      ) as { email: string };
+      ) as { email: string; type: string };
       const accessToken = this.generateToken(
-        email,
+        { email, type },
         process.env.ACCESS_TOKEN_SECRET!,
         process.env.ACCESS_TOKEN_EXPIRY!
       );
@@ -181,7 +195,7 @@ class AuthController {
     }
   }
 
-  public async sendEmailVerificationToken(req: Request, res: Response) {
+  async sendEmailVerificationToken(req: Request, res: Response) {
     const { email, redirectionUrl } = req.body;
 
     if (!email)
@@ -237,7 +251,7 @@ class AuthController {
     }
   }
 
-  public async verifyEmailToken(req: Request, res: Response) {
+  async verifyEmailToken(req: Request, res: Response) {
     const { token } = req.params;
 
     if (!token)

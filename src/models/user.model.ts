@@ -2,14 +2,17 @@ import { Sequelize, Model, DataTypes } from 'sequelize';
 
 import { sequelize } from '../database';
 import { avatar } from '../utils';
+import Permission, { PermissionAttributes } from './permission.modal';
 
 export interface UserAttributes {
   uuid?: string;
-  name: string;
+  name?: string;
   email: string;
-  password: string;
+  password?: string;
   img?: string;
   active?: boolean;
+  type?: string;
+  permissions?: PermissionAttributes[];
   verification_token?: string;
   verification_token_expires?: Date | null;
   verified_at?: Date;
@@ -22,12 +25,13 @@ class User extends Model<UserAttributes> {
   public password!: string;
   public img!: string;
   public active!: boolean;
+  public type!: string;
   public verification_token!: string;
   public verification_token_expires!: Date | null;
   public verified_at!: Date;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  public readonly created_at!: Date;
+  public readonly updated_at!: Date;
 
   public static initialize(sequelize: Sequelize): void {
     this.init(
@@ -60,6 +64,11 @@ class User extends Model<UserAttributes> {
           allowNull: false,
           defaultValue: true
         },
+        type: {
+          type: DataTypes.STRING,
+          defaultValue: 'user',
+          allowNull: true
+        },
         verification_token: {
           type: DataTypes.STRING,
           allowNull: true
@@ -90,7 +99,7 @@ class User extends Model<UserAttributes> {
     );
   }
 
-  public static applyScopes(): void {
+  static applyScopes(): void {
     this.addScope('defaultScope', {
       attributes: {
         exclude: [
@@ -100,14 +109,24 @@ class User extends Model<UserAttributes> {
           'verified_at'
         ]
       },
-      order: [['createdAt', 'DESC']]
+      order: [['created_at', 'DESC']]
     });
     this.addScope('withPassword', {
       attributes: { include: ['password'] },
-      order: [['createdAt', 'DESC']]
+      order: [['created_at', 'DESC']]
     });
     this.addScope('withVerifiedAt', {
       attributes: { include: ['verified_at'] }
+    });
+    this.addScope('withPermissions', {
+      include: [
+        {
+          model: Permission,
+          through: {
+            attributes: []
+          }
+        }
+      ]
     });
   }
 }
